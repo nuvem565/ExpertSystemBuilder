@@ -1,0 +1,185 @@
+﻿
+Subject:
+Przykład dla procesu regulacji temperatury pieca przy użyciu regulatora ze wzmocnieniem (człon P)
+
+Author:
+TJ
+
+DERIVATION: ALL RULES USED
+
+PROBABILITY SYSTEM: fuzzy
+
+DISPLAY THRESHOLD: 1
+
+/* Próg aktywacji reguły. Domyślnie 0.1.
+FUZZY THRESHOLD: 0.0
+
+/* Ilość wykonań - nazwa odpowiedniej zmiennej numerycznej. Można ją wykorzystywać do wyliczeń. 
+/* Domyślnie jedno wykonanie
+LOOP: ITERACJA
+
+/* symbol oddzielający komórki w odczytywanych i zapisywanych plikach .csv
+CSV: ; 
+
+/* N lub No, oznacza, że nowo przypisywna wartość o zmiennej wyliczeniowej nie jest sumowana
+/* w sposób rozmyty z aktualnie zapisaną już wartością.
+OR CURRENT: Y 
+
+
+QUALIFIERS:
+
+/* Qualifier 1
+Q> Uchyb regulacji
+
+V> MAŁO {(-1500,1), (0,0), (1500,0)}
+V> UMIARKOWANIE {(-1500,0), (0,1), (1500,0)}
+V> DUŻO {(-1500,0), (0,0), (1500,1)}
+
+Name: UCHYB_REGULACJI 
+Fuzzify: e 
+
+
+
+/* Qualifier 3
+Q> Wyjście regulatora
+
+V> MAŁO {(-800,1), (0,0), (800,0)}
+V> UMIARKOWANIE {(-800,0), (0,1), (800,0)}
+V> DUŻO {(-800,0), (0,0), (800,1)}
+
+Defuzzify: MOC
+Name: OUTPUT
+
+
+
+CHOICES:
+
+
+VARIABLES:
+
+[MOC]  Moc napędu chłodzenia/grzania 
+Type = N
+Upper = 800
+Lower = -800
+
+[ITERACJA] Iteracja wykonania programu
+Type = N
+Initialize = 1000
+Upper = 3000
+Lower = 0
+
+[AKTUALNA] Aktualna temperatura pieca. Obliczona na podstawie odpowiedzi skokowej.
+Type = N
+Initialize = 0
+
+[WARTOSC_ZADANA] Wartość zadana dla funkcji skoku jednostkowego
+Type = N
+Initialize = 1500
+
+/* Parametry regulatora
+
+[e] Uchyb regulacji 
+Type = N 
+
+[KP] Wzmocnienie regulacji
+Type = N
+Initialize = 120
+
+/* Parametry obiektu
+
+[T1] Parametr obiektu T1
+Type = N
+Initialize = 945
+
+[T2] Parametr obiektu T2
+Type = N
+Initialize = 450
+
+[K] Wzmocnienie obiektu regulacji
+Type = N
+Initialize = 15
+
+
+
+RULES:
+
+
+
+IF:
+       TRUE
+
+THEN:
+       [e] IS GIVEN THE VALUE ([WARTOSC_ZADANA] - [AKTUALNA])
+
+
+/*  RULE NUMBER: 1  
+RULE: 1
+
+IF:
+       Uchyb regulacji {MAŁO} 
+
+THEN:
+       Wyjście regulatora {MAŁO} - confidence = 0.25, {UMIARKOWANIE} - confidence = 0.1, {DUŻO} - confidence = -0.1
+
+
+
+/*  RULE NUMBER: 2 
+RULE: 2
+
+IF:
+       Uchyb regulacji {UMIARKOWANIE} 
+
+THEN:
+       Wyjście regulatora {UMIARKOWANIE} - confidence = 0.3, {MAŁO} - confidence = -0.1, {DUŻO} - confidence = -0.1
+                                 
+
+
+/*  RULE NUMBER: 3  
+RULE: 3
+
+IF:
+       Uchyb regulacji {DUŻO}
+
+THEN:
+       Wyjście regulatora {DUŻO} - confidence = 0.25, {UMIARKOWANIE} - confidence = 0.1, {MAŁO} - confidence = -0.1
+
+
+/* Obliczenie odpowiedzi skokowej
+
+IF:
+       [ITERACJA] <= 10
+
+THEN:
+       X> DEFUZZIFY
+and:   [MOC] IS GIVEN THE VALUE [MOC] * [KP] 
+and:   [AKTUALNA] IS GIVEN THE VALUE [K]*( 1 - [T1]/([T1] - [T2])*exp(-([ITERACJA])/[T1]) + [T2]/([T1]-[T2])*exp(-([ITERACJA])/[T2]) ) * [MOC] * 0.001
+
+
+
+IF:
+       [ITERACJA] > 10
+
+THEN:
+       X> DEFUZZIFY
+and:   [MOC] IS GIVEN THE VALUE [MOC] * [KP] 
+and:   [AKTUALNA] IS GIVEN THE VALUE [K]*( 1 - [T1]/([T1] - [T2])*exp(-([ITERACJA]-10)/[T1]) + [T2]/([T1]-[T2])*exp(-([ITERACJA]-10)/[T2]) ) * READ("C:\Users\Tomasz\source\repos\Testing\Testing\example.csv", ([ITERACJA]-10), 3)
+
+
+
+/* RULE NUMBER: 5
+RULE: 5
+
+IF:
+       TRUE
+
+THEN: 
+       X> SAVE("C:\Users\Tomasz\source\repos\Testing\Testing\example.csv", [ITERACJA], 1, [ITERACJA])
+and:   X> SAVE("C:\Users\Tomasz\source\repos\Testing\Testing\example.csv", [ITERACJA], 2, [e])
+and:   X> SAVE("C:\Users\Tomasz\source\repos\Testing\Testing\example.csv", [ITERACJA], 3, [MOC])
+and:   X> SAVE("C:\Users\Tomasz\source\repos\Testing\Testing\example.csv", [ITERACJA], 4, [AKTUALNA])
+and:   X> SAVE("C:\Users\Tomasz\source\repos\Testing\Testing\example.csv", [ITERACJA], 5, [UCHYB_REGULACJI])
+and:   X> SAVE("C:\Users\Tomasz\source\repos\Testing\Testing\example.csv", [ITERACJA], 8, [OUTPUT])   
+/* Czyszczenie zmiennej obliczanej - po agragacji musi nastąpić wyzerowanie, aby w następnym cyklu programu nie doszło do sumy z poprzednią wartością.
+and:   X> CLEAR (Q [OUTPUT] )
+
+ 

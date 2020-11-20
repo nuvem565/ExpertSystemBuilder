@@ -1,0 +1,175 @@
+BASIC INFO:
+{Subject =
+  Subject
+    (Some
+       "Przykład dla procesu regulacji temperatury pieca przy użyciu regulatora ze wzmocnieniem (człon P)");
+ Author = Author (Some "TJ");
+ StartingText = StartingText None;
+ EndingText = EndingText None;
+ ExternalProgram = ExternalProgram None;
+ DisplayThreshold = Threshold 1.0;
+ Probability = Probability Fuzzy;
+ InitChoiceConfidence = Confidence 0.0;
+ DisplayRules = DisplayRules false;
+ Derivation = Derivation AllRulesUsed;
+ FuzzyThreshold = FuzzyThreshold 0.0;
+ LoopOverVariable = LoopOver (Some "ITERACJA");
+ CSVDelimiter = CSV [|';'|];
+ OrCurrentValue = OrCurrent true;}
+QUALIFIERS:
+{Number = 1;
+ Question = FromRule "Uchyb regulacji";
+ Value = Undefined;
+ Enumerations =
+  [("MAŁO", Some [(-1500.0, 1.0); (0.0, 0.0); (1500.0, 0.0)]);
+   ("UMIARKOWANIE", Some [(-1500.0, 0.0); (0.0, 1.0); (1500.0, 0.0)]);
+   ("DUŻO", Some [(-1500.0, 0.0); (0.0, 0.0); (1500.0, 1.0)])];
+ Name = Some "UCHYB_REGULACJI";
+ Fuzzify = Some "e";
+ Defuzzify = None;}
+{Number = 2;
+ Question = FromRule "Wyjście regulatora";
+ Value = Undefined;
+ Enumerations =
+  [("MAŁO", Some [(-800.0, 1.0); (0.0, 0.0); (800.0, 0.0)]);
+   ("UMIARKOWANIE", Some [(-800.0, 0.0); (0.0, 1.0); (800.0, 0.0)]);
+   ("DUŻO", Some [(-800.0, 0.0); (0.0, 0.0); (800.0, 1.0)])];
+ Name = Some "OUTPUT";
+ Fuzzify = None;
+ Defuzzify = Some "MOC";}
+CHOICES:
+VARIABLES:
+{Name = Name "MOC";
+ Description = Description "Moc napędu chłodzenia/grzania ";
+ Value = NumericVariable None;
+ UpperLimit = Upper (Some 800.0);
+ LowerLimit = Lower (Some -800.0);}
+{Name = Name "ITERACJA";
+ Description = Description "Iteracja wykonania programu";
+ Value = NumericVariable (Some 1000.0);
+ UpperLimit = Upper (Some 3000.0);
+ LowerLimit = Lower (Some 0.0);}
+{Name = Name "AKTUALNA";
+ Description =
+  Description
+    "Aktualna temperatura pieca. Obliczona na podstawie odpowiedzi skokowej.";
+ Value = NumericVariable (Some 0.0);
+ UpperLimit = Upper None;
+ LowerLimit = Lower None;}
+{Name = Name "WARTOSC_ZADANA";
+ Description = Description "Wartość zadana dla funkcji skoku jednostkowego";
+ Value = NumericVariable (Some 1500.0);
+ UpperLimit = Upper None;
+ LowerLimit = Lower None;}
+{Name = Name "e";
+ Description = Description "Uchyb regulacji ";
+ Value = NumericVariable None;
+ UpperLimit = Upper None;
+ LowerLimit = Lower None;}
+{Name = Name "KP";
+ Description = Description "Wzmocnienie regulacji";
+ Value = NumericVariable (Some 2.0);
+ UpperLimit = Upper None;
+ LowerLimit = Lower None;}
+{Name = Name "T1";
+ Description = Description "Parametr obiektu T1";
+ Value = NumericVariable (Some 945.0);
+ UpperLimit = Upper None;
+ LowerLimit = Lower None;}
+{Name = Name "T2";
+ Description = Description "Parametr obiektu T2";
+ Value = NumericVariable (Some 450.0);
+ UpperLimit = Upper None;
+ LowerLimit = Lower None;}
+{Name = Name "K";
+ Description = Description "Wzmocnienie obiektu regulacji";
+ Value = NumericVariable (Some 15.0);
+ UpperLimit = Upper None;
+ LowerLimit = Lower None;}
+RULES:
+
+{
+	Rule: 1 - Name: 
+	IF: 
+		LogicalConst true
+	THEN:
+		AssignNumeric ("e",Expr ("-",Variable "WARTOSC_ZADANA",Variable "AKTUALNA"))
+}
+
+{
+	Rule: 2 - Name: Some(1)
+	IF: 
+		QualifierComparison ("Uchyb regulacji",["MAŁO"])
+	THEN:
+		AssignQualifier
+  ("Wyjście regulatora",[("MAŁO", 0.6); ("UMIARKOWANIE", -0.1); ("DUŻO", -0.3)])
+}
+
+{
+	Rule: 3 - Name: Some(2)
+	IF: 
+		QualifierComparison ("Uchyb regulacji",["UMIARKOWANIE"])
+	THEN:
+		AssignQualifier
+  ("Wyjście regulatora",[("UMIARKOWANIE", 0.65); ("MAŁO", -0.3); ("DUŻO", -0.3)])
+}
+
+{
+	Rule: 4 - Name: Some(3)
+	IF: 
+		QualifierComparison ("Uchyb regulacji",["DUŻO"])
+	THEN:
+		AssignQualifier
+  ("Wyjście regulatora",[("DUŻO", 0.6); ("UMIARKOWANIE", -0.1); ("MAŁO", -0.3)])
+}
+
+{
+	Rule: 5 - Name: 
+	IF: 
+		LogicalConst true
+	THEN:
+		Defuzzify
+		and: AssignNumeric
+  ("AKTUALNA",
+   Expr
+     ("*",
+      Expr
+        ("*",Variable "K",
+         Expr
+           ("+",
+            Expr
+              ("-",Const 1.0,
+               Expr
+                 ("*",
+                  Expr
+                    ("/",Variable "T1",Expr ("-",Variable "T1",Variable "T2")),
+                  Prefix
+                    ("exp",
+                     Expr ("/",Prefix ("-",Variable "ITERACJA"),Variable "T1")))),
+            Expr
+              ("*",
+               Expr ("/",Variable "T2",Expr ("-",Variable "T1",Variable "T2")),
+               Prefix
+                 ("exp",
+                  Expr ("/",Prefix ("-",Variable "ITERACJA"),Variable "T2"))))),
+      Variable "MOC"))
+}
+
+{
+	Rule: 6 - Name: Some(5)
+	IF: 
+		LogicalConst true
+	THEN:
+		Save
+  (StringConst "C:\Users\Tomasz\source\repos\Testing\Testing\example.csv",
+   Variable "ITERACJA",Const 1.0,NumericVar "ITERACJA")
+		and: Save
+  (StringConst "C:\Users\Tomasz\source\repos\Testing\Testing\example.csv",
+   Variable "ITERACJA",Const 2.0,NumericVar "e")
+		and: Save
+  (StringConst "C:\Users\Tomasz\source\repos\Testing\Testing\example.csv",
+   Variable "ITERACJA",Const 3.0,NumericVar "MOC")
+		and: Save
+  (StringConst "C:\Users\Tomasz\source\repos\Testing\Testing\example.csv",
+   Variable "ITERACJA",Const 4.0,NumericVar "AKTUALNA")
+}
