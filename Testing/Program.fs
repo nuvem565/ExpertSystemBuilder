@@ -38,3 +38,6 @@ let inputString =
             printfn "Chosen default file - %s" demoProgramFile
             removeComments (File.ReadAllText(filePath2, Encoding.UTF8))
 
+
+//File.WriteAllText (__SOURCE_DIRECTORY__ + "\\no_comments.txt", (inputString)) //debug only
+
