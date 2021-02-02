@@ -94,3 +94,10 @@ let isStringRA (str:string) =
         match v.Value with
             | StringVariable s -> str = nameofVar
             | _ -> false) variables
+// returns None if variable doesn't exists, option with this structure if it does
+let isVariable x = 
+    ResizeArray.tryFind (fun (a:Variable) -> 
+        match a.Name with 
+        | Name n -> n = x
+        | _ -> false ) variables
+       
