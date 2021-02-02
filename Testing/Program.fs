@@ -65,3 +65,17 @@ let mutable qualifiers = new ResizeArray<Qualifier>()
 let mutable choices = new ResizeArray<Choice>()
 let variables = new ResizeArray<Variable>()
 let mutable rules = new ResizeArray<Rule>()
+
+// Resize array auxiliary functions and parsers
+let manyRA p (arr: ResizeArray<_>) =
+    // the compiler expands the call to Inline.Many to an optimized sequence parser. Enable to use "many" with resize array rather than list.
+    Inline.Many(
+        elementParser = p,
+            stateFromFirstElement = (fun x0 ->
+                                        arr.Add(x0)
+                                        arr),
+            foldState = (fun ra x -> ra.Add(x); ra),
+            resultFromState = (fun ra -> ra),
+            resultForEmptySequence = (fun () -> arr)
+        )
+
