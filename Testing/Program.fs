@@ -27,3 +27,14 @@ printfn "Demo file is in \"Testing\\Testing\\\" path."
 printfn "Write the file name (with .txt) for parsing or type ENTER for %s " demoProgramFile
 printfn "UTF-8 files allowable only"
 
+let inputString = 
+    try
+        let fileName = System.Console.ReadLine()
+        let filePath:string = __SOURCE_DIRECTORY__ + "\\" + fileName
+        removeComments (File.ReadAllText(filePath, Encoding.UTF8))
+    with
+        :? System.IO.FileNotFoundException | :? System.IO.DirectoryNotFoundException -> 
+            let filePath2:string = __SOURCE_DIRECTORY__ + (sprintf "\\%s" demoProgramFile)
+            printfn "Chosen default file - %s" demoProgramFile
+            removeComments (File.ReadAllText(filePath2, Encoding.UTF8))
+
