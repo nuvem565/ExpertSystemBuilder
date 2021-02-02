@@ -87,3 +87,10 @@ let indexElementsOfQualifiers (arr: ResizeArray<_>) =
 let indexElementsOfChoices (arr: ResizeArray<_>) =
     ResizeArray.mapi (fun i (record: Choice) -> { record with Number = i + 1 }) arr
 
+// RA version of isString()
+let isStringRA (str:string) = 
+    ResizeArray.exists ( fun (v:Variable) -> 
+        let (VarAttribute.Name nameofVar) = v.Name
+        match v.Value with
+            | StringVariable s -> str = nameofVar
+            | _ -> false) variables
