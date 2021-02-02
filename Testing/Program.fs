@@ -101,3 +101,12 @@ let isVariable x =
         | Name n -> n = x
         | _ -> false ) variables
        
+// Set given rule in "rules" RA with given boolean value 
+let setRule (rule:Rule) (isTrue:float) =
+    let (FuzzyThreshold fuzzyThreshold) = basicInfo.FuzzyThreshold
+    let index = ResizeArray.tryFindIndex (fun i -> rule.Number = i.Number) rules
+    match index with
+    | Some i when isTrue >= fuzzyThreshold -> rules.Item i <- {rule with State = (True fuzzyThreshold)}
+    | Some i -> rules.Item i <- {rule with State = False}
+    | _ -> failwith (sprintf "No such rule defined %A" rule)
+    
