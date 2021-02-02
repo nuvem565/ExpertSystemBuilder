@@ -61,3 +61,7 @@ let mutable basicInfo =
         CSVDelimiter = "," |> Seq.toArray |> CSV 
         OrCurrentValue = false |> OrCurrent
     }
+let mutable qualifiers = new ResizeArray<Qualifier>()
+let mutable choices = new ResizeArray<Choice>()
+let variables = new ResizeArray<Variable>()
+let mutable rules = new ResizeArray<Rule>()
