@@ -79,3 +79,11 @@ let manyRA p (arr: ResizeArray<_>) =
             resultForEmptySequence = (fun () -> arr)
         )
 
+// Set of functions indexing records of specific type in resize array
+let indexElementsOfRules (arr: ResizeArray<_>) =
+    ResizeArray.mapi (fun i (record: Rule) -> { record with Number = i + 1 }) arr 
+let indexElementsOfQualifiers (arr: ResizeArray<_>) =
+    ResizeArray.mapi (fun i (record: Qualifier) -> { record with Number = i + 1 }) arr
+let indexElementsOfChoices (arr: ResizeArray<_>) =
+    ResizeArray.mapi (fun i (record: Choice) -> { record with Number = i + 1 }) arr
+
