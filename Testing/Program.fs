@@ -110,3 +110,11 @@ let setRule (rule:Rule) (isTrue:float) =
     | Some i -> rules.Item i <- {rule with State = False}
     | _ -> failwith (sprintf "No such rule defined %A" rule)
     
+// Initializing dictionaries for general variables
+// option case Some ... means that the value evaluation is done and assured. The value is accessible directly from dictionary 
+// option case 'None' means not initialized var which should be evaluated by four level "Variable Evaluation Mechanism" but is declared
+let qualifierDict = new Dictionary<string,(string * float) list option>() // List of possible states, by body (question) string
+let numericVariableDict = new Dictionary<string,float option>()
+let stringVariableDict = new Dictionary<string,string option>()
+let choiceDict = new Dictionary<string, float option>()
+
