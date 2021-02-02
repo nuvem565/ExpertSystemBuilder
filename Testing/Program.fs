@@ -41,3 +41,23 @@ let inputString =
 
 //File.WriteAllText (__SOURCE_DIRECTORY__ + "\\no_comments.txt", (inputString)) //debug only
 
+
+// INITIALIZING global functions and variables, resizable arrays for qualifiers, choices and variables
+
+let mutable basicInfo = 
+    {
+        Subject = None |> Subject
+        Author = None |> Author
+        StartingText = None |> StartingText
+        EndingText = None |> EndingText
+        ExternalProgram = None |> ExternalProgram
+        DisplayThreshold = 0.0 |> Threshold
+        Probability = ProbabilityMode.Fuzzy |> Probability
+        InitChoiceConfidence = 0.0 |> Confidence
+        DisplayRules = false |> DisplayRules
+        Derivation = Derivation.AllRulesUsed |> BasicAttribute.Derivation
+        FuzzyThreshold = 0.1 |> FuzzyThreshold
+        LoopOverVariable = None |> LoopOver
+        CSVDelimiter = "," |> Seq.toArray |> CSV 
+        OrCurrentValue = false |> OrCurrent
+    }
