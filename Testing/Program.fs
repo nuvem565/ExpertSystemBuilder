@@ -5,6 +5,15 @@
 // #r """C:\Users\Tomasz\source\repos\fparsec-master\FParsec\bin\Debug\net45\FParsec.dll"""
 
 module TestingES
+
+open FParsec
+open System
+open System.IO
+open System.Text
+open FSharpx.Collections
+open Microsoft.FSharp.Collections
+open System.Collections.Generic
+
 ////////// IMPORT OF INPUT TEXT
 
 let errorMsg = new StringBuilder()
