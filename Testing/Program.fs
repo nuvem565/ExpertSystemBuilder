@@ -282,3 +282,9 @@ let pQualifier =
     //parses one occurence of qualifier
     let pQualifierQuestion = 
         str_ws "Q>" >>. ( ((strCI_ws "run" >>? parentheses pSentence2 .>>? ws .>>.? (pSentence |>> trim)) |>> FromProgram) <|> (pSentence |>> FromRule) ) .>> ws
+    let pMembershipFunction = 
+        sepBy1 (parentheses( pRealNumber .>> str_ws "," .>>. (pIfTested (fun num -> 0. <= num && num <= 1.) "Membership function must be composed of numbers between 0 and 1" pRealNumber))) (str_ws ",") 
+        |>> List.sortBy (fun point -> fst point)
+        |> betweenCurly 
+        |> opt // Fuzzy set points parser -  >V Some {(-inf,0), (0,0), (2,1), (4,1), (6,0), (inf, 0)}
+        |> pIfTested (fun _ -> basicInfo.Probability = (ProbabilityMode.Fuzzy |> Probability)) "Parsing of fuzzy sets is available only in fuzzy logic mode (Probability mode: 6 in basic informations on the top)" 
