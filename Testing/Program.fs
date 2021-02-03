@@ -160,3 +160,17 @@ let pBasic =
     let pBasicEndText = strCI_ws "Ending" >>. key "text" ":" >>. opt ( pSentence ) |>> EndingText .>> ws
     // place for external program parser
     let pBasicThreshold = strCI_ws "display" >>. key "threshold" ":" >>. pfloat |>> Threshold .>> ws
+    // auxiliary for probability system parser
+    let pModes = choice [attempt( attempt(str_ws "1") <|> (strCI_ws "yes" >>. strCI_ws "no") ) >>% ProbabilityMode.YesNo
+                         attempt ( choice [ attempt(str_ws "2")
+                                            ( attempt(strCI_ws "0") <|> strCI_ws "zero" >>. optional( attempt(strCI_ws "-") <|> strCI_ws "to" ) >>. optional( attempt(strCI_ws "ten") <|> strCI_ws "10"))
+                                           ] >>% ProbabilityMode.ZeroTen)
+                         attempt (  attempt(str_ws "3") <|> (strCI_ws "-100" >>? optional(strCI_ws "to") >>? optional(strCI_ws "100")) >>. 
+                                    (attempt(strCI "D" >>. nextCharSatisfies (isAnyOf " \n\r") >>% ProbabilityMode.HundredDependent) .>> ws <??> "Expected newline after 'A', 'D' or 'I' letter" <|> 
+                                     attempt(strCI "I" >>. nextCharSatisfies (isAnyOf " \n\r") >>% ProbabilityMode.HundredIndependent) .>> ws <??> "Expected newline after 'A', 'D' or 'I' letter" <|> 
+                                     (optional(strCI "A" >>. nextCharSatisfies (isAnyOf " \n\r")) >>% ProbabilityMode.HundredAverage) .>> ws <??> "Expected newline after 'A', 'D' or 'I' letter"
+                                     ) )
+                         attempt (((strCI "Incr" >>? optional (strCI_ws "ement")) >>? strCI_ws "/" >>? (strCI "Decr" >>? optional (strCI_ws "ement"))) <|> (str_ws "4") >>% ProbabilityMode.IncrDecr)
+                         attempt ((strCI_ws "custom" >>? optional(strCI_ws "formula")) <|> (str_ws "5") >>% ProbabilityMode.Custom)
+                         ((strCI_ws "fuzzy" >>? optional (strCI_ws "logic")) <|> strCI_ws "6") >>% ProbabilityMode.Fuzzy
+                         ]
