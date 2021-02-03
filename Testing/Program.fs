@@ -192,3 +192,16 @@ let pBasic =
         strCI_ws "or" >>. optional(strCI_ws "current") >>. optional(strCI_ws "value") >>. str_ws ":" >>. 
         ( attempt(strCI "y" >>. optional(strCI "es") >>% true |>> OrCurrent) <|> (strCI "n" >>. optional(strCI "o") >>% false |>> OrCurrent) ) .>> ws
 
+    let pAttributes = many( choice [attempt pBasicSubject
+                                    attempt pBasicAuthor
+                                    attempt pBasicStartText
+                                    attempt pBasicEndText
+                                    attempt pBasicThreshold
+                                    attempt pBasicProbability
+                                    attempt pConfidence
+                                    attempt pDisplayRules
+                                    attempt pBasicDerivation
+                                    attempt pLoopOver
+                                    attempt pCSVDelimiter
+                                    attempt pOrCurrent
+                                    pFuzzy])
