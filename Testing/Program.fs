@@ -177,3 +177,4 @@ let pBasic =
     let pBasicProbability = strCI_ws "Probability" >>. optional(strCI_ws "system") >>. strCI_ws ":" >>. (pModes |>> Probability) .>> ws
     
     let pConfidence = strCI_ws "Initial" >>. strCI_ws "choice" >>. key "confidence" ":" >>. (pfloat |>> Confidence)
+    let pDisplayRules = strCI_ws "display" >>. key "rules" ":" >>. ( attempt(strCI "y" >>. optional(strCI "es") >>% true) <|> (strCI "n" >>. optional(strCI "o") >>% false) ) |>> DisplayRules .>> ws
