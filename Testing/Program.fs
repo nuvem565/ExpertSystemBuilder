@@ -174,3 +174,5 @@ let pBasic =
                          attempt ((strCI_ws "custom" >>? optional(strCI_ws "formula")) <|> (str_ws "5") >>% ProbabilityMode.Custom)
                          ((strCI_ws "fuzzy" >>? optional (strCI_ws "logic")) <|> strCI_ws "6") >>% ProbabilityMode.Fuzzy
                          ]
+    let pBasicProbability = strCI_ws "Probability" >>. optional(strCI_ws "system") >>. strCI_ws ":" >>. (pModes |>> Probability) .>> ws
+    
