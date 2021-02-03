@@ -205,3 +205,62 @@ let pBasic =
                                     attempt pCSVDelimiter
                                     attempt pOrCurrent
                                     pFuzzy])
+    pAttributes |>> ( fun basicInfo -> 
+        {
+            Subject = 
+                match List.tryFind (function Subject _ -> true | _ -> false) basicInfo with
+                    | Some sub -> sub
+                    | _ -> None |> Subject
+            Author = 
+                match List.tryFind (function Author _ -> true | _ -> false) basicInfo with
+                        | Some author -> author
+                        | _ -> None |> Author
+            StartingText = 
+                match List.tryFind (function StartingText _ -> true | _ -> false) basicInfo with
+                        | Some st -> st
+                        | _ -> None |> StartingText
+            EndingText = 
+                match List.tryFind (function EndingText _ -> true | _ -> false) basicInfo with
+                        | Some et -> et
+                        | _ -> None |> EndingText
+            ExternalProgram = None |> ExternalProgram
+            InitChoiceConfidence = 
+                match List.tryFind (function Confidence _ -> true | _ -> false) basicInfo with
+                    | Some mode -> mode 
+                    | None -> 0.0 |> Confidence
+            Derivation =
+                match List.tryFind (function Derivation _ -> true | _ -> false) basicInfo with
+                    | Some deriv -> deriv
+                    | _ -> Derivation.AllRulesUsed |> BasicAttribute.Derivation
+            Probability = 
+                match List.tryFind (function Probability _ -> true | _ -> false) basicInfo with
+                    | Some prob -> prob
+                    | _ -> ProbabilityMode.YesNo |> Probability
+            DisplayThreshold = 
+                match List.tryFind (function Threshold _ -> true | _ -> false) basicInfo with
+                    | Some thres -> thres
+                    | _ -> 0.0 |> Threshold
+            FuzzyThreshold =
+                match List.tryFind (function FuzzyThreshold _ -> true | _ -> false ) basicInfo with
+                    | Some(FuzzyThreshold fuzzy)  when -1. < fuzzy && fuzzy <= 1. -> fuzzy |> FuzzyThreshold
+                    | _ -> 
+                        errorMsg.AppendLine "Incorrect fuzzy threshold. Selected default = 0.1" |> ignore
+                        0.1 |> FuzzyThreshold
+            DisplayRules = 
+                match List.tryFind (function DisplayRules _ -> true | _ -> false) basicInfo with
+                    | Some dr -> dr
+                    | _ -> false |> DisplayRules
+            LoopOverVariable = 
+                match List.tryFind (function LoopOver _ -> true | _ -> false) basicInfo with
+                    | Some var -> var
+                    | _ -> None |> LoopOver
+            CSVDelimiter = 
+                match List.tryFind (function CSV _ -> true | _ -> false) basicInfo with
+                | Some csv -> csv
+                | None -> "," |> Seq.toArray |> CSV
+            OrCurrentValue = 
+                match List.tryFind (function OrCurrent _ -> true | _ -> false) basicInfo with
+                | Some orCurrent -> orCurrent
+                | None -> false |> OrCurrent
+            
+        })  
