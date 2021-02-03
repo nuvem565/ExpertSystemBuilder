@@ -137,3 +137,14 @@ let inRange key f =
     | Some numVar -> fst numVar.getRange <= f && f <= snd numVar.getRange
     | None -> failwith (sprintf "Variable %s doesn't exists or is not a numeric variable" key)
 let isChoice str = ResizeArray.exists (fun (c:Choice) -> c.Name = str) choices 
+let confidenceInRange value = 
+    match basicInfo.Probability with
+    | Probability(ProbabilityMode.YesNo) when value = 1. -> Confidence.YesNo true
+    | Probability(ProbabilityMode.YesNo) when value = 0.0 -> Confidence.YesNo false
+    | Probability(ProbabilityMode.ZeroTen) when 0. <= value || value <= 10. -> Confidence.ZeroTen (int value)
+    | Probability(ProbabilityMode.HundredAverage) when -100. <= value && value <= 100. -> Confidence.HundredScale (int value)
+    | Probability(ProbabilityMode.IncrDecr) when -10_000. <= value && value <= 10_000. -> Confidence.IncrDecr (int value)
+    | Probability(ProbabilityMode.Custom) -> Confidence.Custom (value)
+    | Probability(ProbabilityMode.Fuzzy) when -1. <= value && value <= 1. -> Confidence.Fuzzy (value)
+    | _ -> failwith "Improper value for choice"
+
