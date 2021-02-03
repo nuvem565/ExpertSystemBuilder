@@ -178,3 +178,8 @@ let pBasic =
     
     let pConfidence = strCI_ws "Initial" >>. strCI_ws "choice" >>. key "confidence" ":" >>. (pfloat |>> Confidence)
     let pDisplayRules = strCI_ws "display" >>. key "rules" ":" >>. ( attempt(strCI "y" >>. optional(strCI "es") >>% true) <|> (strCI "n" >>. optional(strCI "o") >>% false) ) |>> DisplayRules .>> ws
+    let pBasicDerivation = key "Derivation" ":" >>. 
+        choice [ attempt( (strCI_ws "a") >>. optional(strCI_ws "ll") >>. optional(strCI_ws "rules") >>. optional(strCI_ws "used") ) >>% Derivation.AllRulesUsed
+                 attempt( (strCI_ws "n") >>. optional(strCI_ws "on") >>. optional(strCI_ws "-") >>. optional(strCI_ws "redundant") ) >>% Derivation.NonRedundant 
+                 attempt( (strCI_ws "c") >>. optional(strCI_ws "hosen") >>. optional(strCI_ws "by") >>. optional(strCI_ws "user") ) >>% Derivation.ChosenByUser]
+        |>> BasicAttribute.Derivation .>> ws
