@@ -155,3 +155,4 @@ let confidenceInRange value =
 
 let pBasic = 
     let pBasicSubject = key "Subject" ":" >>. opt ( pSentence) |>> Subject .>> ws
+    let pBasicAuthor = key "Author" ":" >>. opt ( pSentence ) |>> Author .>> ws
