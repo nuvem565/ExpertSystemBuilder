@@ -121,3 +121,8 @@ let choiceDict = new Dictionary<string, float option>()
 // Qualifiers and variables query functons
 let findQualifierByQuestion q : Qualifier option = 
     ResizeArray.tryFind (fun qualifier -> qualifier.unwrapQuestion = q) qualifiers 
+
+// Test for parsed keys and values
+let isString str = stringVariableDict.ContainsKey str
+let isNumeric str = numericVariableDict.ContainsKey str
+let isQualifier str = qualifierDict.ContainsKey str
