@@ -126,3 +126,9 @@ let isEnum (qualifierQuestion:string) strList =
     | Some qualifier -> 
         if List.forall (fun s -> List.contains s qualifier.unwrapEnums) strList then true else false
     | None -> false
+let isEnumDefined key str = 
+    if isQualifier key then
+        match qualifierDict.Item key with
+        | Some items -> List.exists (fun item -> fst item = fst str) items
+        | None -> false
+    else false
