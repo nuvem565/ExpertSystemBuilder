@@ -288,3 +288,5 @@ let pQualifier =
         |> betweenCurly 
         |> opt // Fuzzy set points parser -  >V Some {(-inf,0), (0,0), (2,1), (4,1), (6,0), (inf, 0)}
         |> pIfTested (fun _ -> basicInfo.Probability = (ProbabilityMode.Fuzzy |> Probability)) "Parsing of fuzzy sets is available only in fuzzy logic mode (Probability mode: 6 in basic informations on the top)" 
+    let pQualifierEnumerations = many (str_ws "V>" >>. (pSentence |>> trim .>> ws .>>. pMembershipFunction) .>> ws)
+    
