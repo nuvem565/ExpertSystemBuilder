@@ -295,3 +295,32 @@ let pQualifier =
     let pDefuzzify = key "defuzzify" ":" >>. (pAnyString >>= fun str -> preturn (str, "DEFUZZIFY") .>> ws) 
     let pAttributes = many(choice [attempt pQualifierName; attempt pFuzzify; attempt pDefuzzify]) .>> ws
 
+    ( fun a b (c: (string * string) list) -> 
+        let mutable fuzzifyVar = ""
+        match a with
+        | FromRule question ->
+            if isQualifier question then 
+                failwith (sprintf "Such qualifier already exists: %A.\n" question) 
+            else 
+                qualifierDict.Add(question, None)
+        | FromProgram(question = q) -> qualifierDict.Add(q, None)
+        { Number = 0 
+          Question = a 
+          Value = QualifierValue.Undefined
+          Enumerations = b 
+          Name =  match List.tryFind (function _ , "NAME" -> true | _ -> false) c with
+                  | Some(str, _) -> Some str
+                  | _ -> None
+          Fuzzify = match List.tryFind (function _ , "FUZZIFY" -> true | _ -> false) c with
+                    | Some(str, _) ->
+                        fuzzifyVar <- str
+                        Some str
+                    | Some(str, _) -> Some str
+                    | _ -> None
+          Defuzzify = match List.tryFind ( function _ , "DEFUZZIFY" -> true | _ -> false) c with
+                      | Some(str, _) when str <> fuzzifyVar -> Some str
+                      | Some(str, _) -> failwith (sprintf "Fuzzify variable cannot be the same as defuzzify variable")
+                      | _ -> None
+          } )
+    |> pipe3 pQualifierQuestion pQualifierEnumerations pAttributes
+ 
