@@ -187,3 +187,4 @@ let pBasic =
     let pLoopOver = 
         strCI_ws "Loop" >>. optional(strCI_ws "over") >>. optional(strCI_ws "variable") >>. str_ws ":" 
         >>. ( pAnyString ) |>> Some |>> LoopOver .>> ws
+    let pCSVDelimiter = strCI_ws "CSV" >>. optional(strCI_ws "delimiter") >>. str_ws ":" >>. (pSentence |>> trim |>> Seq.toArray |>> CSV) .>> ws
