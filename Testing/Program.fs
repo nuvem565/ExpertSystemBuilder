@@ -280,3 +280,5 @@ let CSVset path row column input =
 
 let pQualifier = 
     //parses one occurence of qualifier
+    let pQualifierQuestion = 
+        str_ws "Q>" >>. ( ((strCI_ws "run" >>? parentheses pSentence2 .>>? ws .>>.? (pSentence |>> trim)) |>> FromProgram) <|> (pSentence |>> FromRule) ) .>> ws
