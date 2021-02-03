@@ -275,3 +275,8 @@ let CSVset path row column input =
 
 // END OF BASIC INFO PARSER
 
+
+// QUALIFIERS PARSER
+
+let pQualifier = 
+    //parses one occurence of qualifier
