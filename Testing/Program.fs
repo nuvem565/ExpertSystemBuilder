@@ -127,3 +127,8 @@ let isString str = stringVariableDict.ContainsKey str
 let isNumeric str = numericVariableDict.ContainsKey str
 let isQualifier str = qualifierDict.ContainsKey str
 let isQualifierName str = ResizeArray.exists (function (q:Qualifier) -> q.unwrapName = str) qualifiers
+let isEnum (qualifierQuestion:string) strList = 
+    match ResizeArray.tryFind (fun (q:Qualifier) -> q.unwrapQuestion = qualifierQuestion) qualifiers with
+    | Some qualifier -> 
+        if List.forall (fun s -> List.contains s qualifier.unwrapEnums) strList then true else false
+    | None -> false
