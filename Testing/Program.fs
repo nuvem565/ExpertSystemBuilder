@@ -324,3 +324,10 @@ let pQualifier =
           } )
     |> pipe3 pQualifierQuestion pQualifierEnumerations pAttributes
  
+
+let manyQualifiers = 
+    //parses many qualifiers occuring after keyword
+    key "qualifiers" ":" >>. (manyRA pQualifier qualifiers) |>> (fun qRA -> qualifiers <- indexElementsOfQualifiers qualifiers; qualifiers) .>> ws
+ 
+// END OF QUALIFIERS PARSER 
+
