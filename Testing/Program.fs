@@ -290,3 +290,8 @@ let pQualifier =
         |> pIfTested (fun _ -> basicInfo.Probability = (ProbabilityMode.Fuzzy |> Probability)) "Parsing of fuzzy sets is available only in fuzzy logic mode (Probability mode: 6 in basic informations on the top)" 
     let pQualifierEnumerations = many (str_ws "V>" >>. (pSentence |>> trim .>> ws .>>. pMembershipFunction) .>> ws)
     
+    let pQualifierName = key "name" ":" >>. (pAnyString >>= fun str -> preturn (str, "NAME") .>> ws ) 
+    let pFuzzify = key "fuzzify" ":" >>. (pAnyString >>= fun str -> preturn (str, "FUZZIFY") .>> ws) 
+    let pDefuzzify = key "defuzzify" ":" >>. (pAnyString >>= fun str -> preturn (str, "DEFUZZIFY") .>> ws) 
+    let pAttributes = many(choice [attempt pQualifierName; attempt pFuzzify; attempt pDefuzzify]) .>> ws
+
