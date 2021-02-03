@@ -188,3 +188,7 @@ let pBasic =
         strCI_ws "Loop" >>. optional(strCI_ws "over") >>. optional(strCI_ws "variable") >>. str_ws ":" 
         >>. ( pAnyString ) |>> Some |>> LoopOver .>> ws
     let pCSVDelimiter = strCI_ws "CSV" >>. optional(strCI_ws "delimiter") >>. str_ws ":" >>. (pSentence |>> trim |>> Seq.toArray |>> CSV) .>> ws
+    let pOrCurrent = 
+        strCI_ws "or" >>. optional(strCI_ws "current") >>. optional(strCI_ws "value") >>. str_ws ":" >>. 
+        ( attempt(strCI "y" >>. optional(strCI "es") >>% true |>> OrCurrent) <|> (strCI "n" >>. optional(strCI "o") >>% false |>> OrCurrent) ) .>> ws
+
