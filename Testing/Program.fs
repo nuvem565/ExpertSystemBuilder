@@ -157,3 +157,4 @@ let pBasic =
     let pBasicSubject = key "Subject" ":" >>. opt ( pSentence) |>> Subject .>> ws
     let pBasicAuthor = key "Author" ":" >>. opt ( pSentence ) |>> Author .>> ws
     let pBasicStartText = strCI_ws "Starting " >>. key "text" ":" >>. opt ( pSentence ) |>> StartingText .>> ws
+    let pBasicEndText = strCI_ws "Ending" >>. key "text" ":" >>. opt ( pSentence ) |>> EndingText .>> ws
