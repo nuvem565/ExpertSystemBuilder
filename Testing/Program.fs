@@ -158,3 +158,5 @@ let pBasic =
     let pBasicAuthor = key "Author" ":" >>. opt ( pSentence ) |>> Author .>> ws
     let pBasicStartText = strCI_ws "Starting " >>. key "text" ":" >>. opt ( pSentence ) |>> StartingText .>> ws
     let pBasicEndText = strCI_ws "Ending" >>. key "text" ":" >>. opt ( pSentence ) |>> EndingText .>> ws
+    // place for external program parser
+    let pBasicThreshold = strCI_ws "display" >>. key "threshold" ":" >>. pfloat |>> Threshold .>> ws
