@@ -148,3 +148,9 @@ let confidenceInRange value =
     | Probability(ProbabilityMode.Fuzzy) when -1. <= value && value <= 1. -> Confidence.Fuzzy (value)
     | _ -> failwith "Improper value for choice"
 
+
+////////// PARSERS DEFINITIONS
+    
+// BASIC INFO PARSER
+
+let pBasic = 
