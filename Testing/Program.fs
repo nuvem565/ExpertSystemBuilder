@@ -183,3 +183,4 @@ let pBasic =
                  attempt( (strCI_ws "n") >>. optional(strCI_ws "on") >>. optional(strCI_ws "-") >>. optional(strCI_ws "redundant") ) >>% Derivation.NonRedundant 
                  attempt( (strCI_ws "c") >>. optional(strCI_ws "hosen") >>. optional(strCI_ws "by") >>. optional(strCI_ws "user") ) >>% Derivation.ChosenByUser]
         |>> BasicAttribute.Derivation .>> ws
+    let pFuzzy = strCI_ws "fuzzy" >>? key "threshold" ":" >>. pfloat |>> FuzzyThreshold .>> ws
