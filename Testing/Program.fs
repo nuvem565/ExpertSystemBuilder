@@ -118,3 +118,6 @@ let numericVariableDict = new Dictionary<string,float option>()
 let stringVariableDict = new Dictionary<string,string option>()
 let choiceDict = new Dictionary<string, float option>()
 
+// Qualifiers and variables query functons
+let findQualifierByQuestion q : Qualifier option = 
+    ResizeArray.tryFind (fun qualifier -> qualifier.unwrapQuestion = q) qualifiers 
