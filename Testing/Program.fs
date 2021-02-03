@@ -126,3 +126,4 @@ let findQualifierByQuestion q : Qualifier option =
 let isString str = stringVariableDict.ContainsKey str
 let isNumeric str = numericVariableDict.ContainsKey str
 let isQualifier str = qualifierDict.ContainsKey str
+let isQualifierName str = ResizeArray.exists (function (q:Qualifier) -> q.unwrapName = str) qualifiers
