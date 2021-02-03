@@ -154,3 +154,4 @@ let confidenceInRange value =
 // BASIC INFO PARSER
 
 let pBasic = 
+    let pBasicSubject = key "Subject" ":" >>. opt ( pSentence) |>> Subject .>> ws
