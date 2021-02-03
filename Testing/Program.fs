@@ -184,3 +184,6 @@ let pBasic =
                  attempt( (strCI_ws "c") >>. optional(strCI_ws "hosen") >>. optional(strCI_ws "by") >>. optional(strCI_ws "user") ) >>% Derivation.ChosenByUser]
         |>> BasicAttribute.Derivation .>> ws
     let pFuzzy = strCI_ws "fuzzy" >>? key "threshold" ":" >>. pfloat |>> FuzzyThreshold .>> ws
+    let pLoopOver = 
+        strCI_ws "Loop" >>. optional(strCI_ws "over") >>. optional(strCI_ws "variable") >>. str_ws ":" 
+        >>. ( pAnyString ) |>> Some |>> LoopOver .>> ws
