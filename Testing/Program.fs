@@ -264,3 +264,14 @@ let pBasic =
                 | None -> false |> OrCurrent
             
         })  
+
+let CSVget path row column = 
+    let (CSV delimiter) = basicInfo.CSVDelimiter
+    csvToNumber path row column (delimiter)
+
+let CSVset path row column input = 
+    let (CSV delimiter) = basicInfo.CSVDelimiter
+    saveToCsv path row column delimiter input
+
+// END OF BASIC INFO PARSER
+
