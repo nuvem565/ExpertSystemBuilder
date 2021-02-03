@@ -132,3 +132,7 @@ let isEnumDefined key str =
         | Some items -> List.exists (fun item -> fst item = fst str) items
         | None -> false
     else false
+let inRange key f =
+    match ResizeArray.tryFind (fun (v:Variable) -> v.unwrapName = key && isNumeric key) variables with     
+    | Some numVar -> fst numVar.getRange <= f && f <= snd numVar.getRange
+    | None -> failwith (sprintf "Variable %s doesn't exists or is not a numeric variable" key)
