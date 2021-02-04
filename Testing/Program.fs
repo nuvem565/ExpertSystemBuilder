@@ -401,3 +401,5 @@ let pVariable =
                         List.find ( function | Lower x -> true | _ -> false ) d 
                     with
                         :? System.Collections.Generic.KeyNotFoundException -> None |> Lower
+            }) |> pipe4 pName pDescription pType pRest
+
