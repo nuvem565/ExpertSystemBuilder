@@ -356,3 +356,6 @@ let pVariable =
     let pInitStr = key "Initialize" "=" >>? (betweenQuotations(opt pSentence |>> StringVariable)) .>> ws
     let pUpper = strCI_ws "Upper" >>. optional(strCI_ws "limit") >>. strCI_ws "=" >>. (opt pfloat) |>> Upper .>> ws |> notEmpty
     let pLower = strCI_ws "Lower" >>. optional(strCI_ws "limit") >>. strCI_ws "=">>. (opt pfloat) |>> Lower .>> ws |> notEmpty
+    
+    let pRest = many(choice [attempt(pInitNum); attempt(pInitStr); pUpper; pLower]) 
+
