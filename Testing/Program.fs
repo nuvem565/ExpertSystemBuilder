@@ -391,3 +391,13 @@ let pVariable =
                         | _ -> 
                             errorMsg.AppendFormat ("\tWrong indicator. Type should be denoted by adding 'Type = S' or 'Type = N' line\r\n") |> ignore
                             Undefined
+                UpperLimit = 
+                    try 
+                        List.find ( function | Upper x -> true | _ -> false ) d 
+                    with
+                        :? System.Collections.Generic.KeyNotFoundException -> None |> Upper
+                LowerLimit = 
+                    try 
+                        List.find ( function | Lower x -> true | _ -> false ) d 
+                    with
+                        :? System.Collections.Generic.KeyNotFoundException -> None |> Lower
