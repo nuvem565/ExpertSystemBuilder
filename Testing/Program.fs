@@ -367,3 +367,27 @@ let pVariable =
                     else 
                         a |> Name;
                 Description = b |> Description
+                Value = match c with 
+                        | 'S' -> 
+                            let str = List.tryFind ( function | StringVariable _ -> true | _ -> false ) d // scan list of rest parameters
+                            match str with // finded option with initialized value
+                            | Some x -> 
+                                let (StringVariable dictInput) = x // only one case possible
+                                stringVariableDict.Add(a, dictInput) // bare option to the dict - Some if initialized
+                                x // for record
+                            | _ -> 
+                                stringVariableDict.Add(a, None)
+                                StringVariable None// ArgumentNullException - handled by FParsec
+                        | 'N' -> 
+                            let num = List.tryFind ( function | NumericVariable _ -> true | _ -> false ) d 
+                            match num with // option of option
+                            | Some x -> 
+                                let (NumericVariable dictInput) = x 
+                                numericVariableDict.Add(a, dictInput)
+                                x 
+                            | _ -> 
+                                numericVariableDict.Add(a, None)
+                                NumericVariable None 
+                        | _ -> 
+                            errorMsg.AppendFormat ("\tWrong indicator. Type should be denoted by adding 'Type = S' or 'Type = N' line\r\n") |> ignore
+                            Undefined
