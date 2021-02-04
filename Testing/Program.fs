@@ -343,3 +343,8 @@ let manyChoices =
     key "choices" ":" >>. (manyRA pChoice choices) |>> (fun chRA -> indexElementsOfChoices choices; choices ) .>> ws
 
 // END OF CHOICES PARSER
+
+
+// VARIABLES PARSER
+
+let pVariable = 
