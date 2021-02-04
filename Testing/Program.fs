@@ -351,3 +351,8 @@ let pVariable =
     let pName = betweenSquare pAnyString
     let pDescription = pSentence
     let pType = key "Type" "=" >>. (attempt (pchar 'N') <|> pchar 'S') .>> ws
+    // all three parsers for creating attributes with identifier that may be applied in any order
+    let pInitNum = key "Initialize" "=" >>? (opt pfloat |>> NumericVariable) .>> ws 
+    let pInitStr = key "Initialize" "=" >>? (betweenQuotations(opt pSentence |>> StringVariable)) .>> ws
+    let pUpper = strCI_ws "Upper" >>. optional(strCI_ws "limit") >>. strCI_ws "=" >>. (opt pfloat) |>> Upper .>> ws |> notEmpty
+    let pLower = strCI_ws "Lower" >>. optional(strCI_ws "limit") >>. strCI_ws "=">>. (opt pfloat) |>> Lower .>> ws |> notEmpty
