@@ -331,3 +331,9 @@ let manyQualifiers =
  
 // END OF QUALIFIERS PARSER 
 
+
+// CHOICES PARSER
+
+let pChoice =
+    str_ws "C>" >>. pAnyString |>> (fun a -> choiceDict.Add(a, None); { Number = 0; Name = a; State = None })
+
