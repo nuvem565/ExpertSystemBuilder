@@ -349,3 +349,4 @@ let manyChoices =
 
 let pVariable = 
     let pName = betweenSquare pAnyString
+    let pDescription = pSentence
