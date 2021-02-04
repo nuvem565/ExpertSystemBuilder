@@ -366,3 +366,4 @@ let pVariable =
                         failwith "Such string variable already exists!" 
                     else 
                         a |> Name;
+                Description = b |> Description
