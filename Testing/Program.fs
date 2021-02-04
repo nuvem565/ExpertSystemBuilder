@@ -337,3 +337,9 @@ let manyQualifiers =
 let pChoice =
     str_ws "C>" >>. pAnyString |>> (fun a -> choiceDict.Add(a, None); { Number = 0; Name = a; State = None })
 
+
+let manyChoices = 
+    // parses many choices
+    key "choices" ":" >>. (manyRA pChoice choices) |>> (fun chRA -> indexElementsOfChoices choices; choices ) .>> ws
+
+// END OF CHOICES PARSER
