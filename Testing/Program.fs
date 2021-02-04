@@ -350,3 +350,4 @@ let manyChoices =
 let pVariable = 
     let pName = betweenSquare pAnyString
     let pDescription = pSentence
+    let pType = key "Type" "=" >>. (attempt (pchar 'N') <|> pchar 'S') .>> ws
