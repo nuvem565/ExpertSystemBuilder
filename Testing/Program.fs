@@ -359,3 +359,4 @@ let pVariable =
     
     let pRest = many(choice [attempt(pInitNum); attempt(pInitStr); pUpper; pLower]) 
 
+    (fun a b c (d:VarAttribute list) -> 
