@@ -360,3 +360,9 @@ let pVariable =
     let pRest = many(choice [attempt(pInitNum); attempt(pInitStr); pUpper; pLower]) 
 
     (fun a b c (d:VarAttribute list) -> 
+            { 
+                Name = 
+                    if isQualifier a || isString a || isNumeric a then 
+                        failwith "Such string variable already exists!" 
+                    else 
+                        a |> Name;
