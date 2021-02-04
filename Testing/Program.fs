@@ -348,3 +348,4 @@ let manyChoices =
 // VARIABLES PARSER
 
 let pVariable = 
+    let pName = betweenSquare pAnyString
