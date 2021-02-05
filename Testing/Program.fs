@@ -459,3 +459,32 @@ pExpr.TermParser <- choice[ number |>> Expr.Const
                             pFrame
                             bracketedVariable ]
 
+// definiowanie operatorów, w argumentach, kolejno:
+// typ operatora, odpowiadający mu ciąg znaków, pomijanie białych znaków (zawsze "włączone"), kolejność wykonywania działania, 
+// łączność (jeśli jest algebraiczna jak przy dodawaniu lub odejmowaniu, podaje się lewą), funkcja odpowiadająca operatorowi
+
+pExpr.AddOperator(InfixOperator("+", spaces, 1, Associativity.Left, fun a b ->  Expr("+", a, b)) )
+pExpr.AddOperator(InfixOperator("-", spaces, 1, Associativity.Left, fun a b -> Expr("-", a, b)) )
+pExpr.AddOperator(InfixOperator("*", spaces, 2, Associativity.Left, fun a b -> Expr("*", a, b)) )
+pExpr.AddOperator(InfixOperator("/", spaces, 2, Associativity.Left, fun a b -> Expr("/", a, b)) )
+pExpr.AddOperator(InfixOperator("%", spaces, 2, Associativity.Left, fun a b -> Expr("modulo", a, b)))
+pExpr.AddOperator(InfixOperator("^", spaces, 3, Associativity.Right, fun a b -> Expr("^", a, b)) )
+pExpr.AddOperator(PrefixOperator("-", spaces, 4, true,  fun x -> Prefix("-", x)) )
+pExpr.AddOperator(PrefixOperator("+", spaces, 4, true, fun x -> Prefix("+", x)))
+pExpr.AddOperator(PrefixOperator("ln", spaces, 4, true, fun x -> Prefix("ln", x)))
+pExpr.AddOperator(PrefixOperator("exp", spaces, 4, true, fun x -> Prefix("exp", x)))
+pExpr.AddOperator(PrefixOperator("sin", spaces, 4, true, fun x -> Prefix("sin", x)))
+pExpr.AddOperator(PrefixOperator("cos", spaces, 4, true, fun x -> Prefix("cos", x)))
+pExpr.AddOperator(PrefixOperator("tan", spaces, 4, true, fun x -> Prefix("tan", x)))
+pExpr.AddOperator(PrefixOperator("cot", spaces, 4, true, fun x -> Prefix("cot", x)))
+pExpr.AddOperator(PrefixOperator("asin", spaces, 4, true, fun x -> Prefix("asin", x)))
+pExpr.AddOperator(PrefixOperator("acos", spaces, 4, true, fun x -> Prefix("acos", x)))
+pExpr.AddOperator(PrefixOperator("atan", spaces, 4, true, fun x -> Prefix("atan", x)))
+pExpr.AddOperator(PrefixOperator("acot", spaces, 4, true, fun x -> Prefix("acot", x)))
+pExpr.AddOperator(PrefixOperator("sinh", spaces, 4, true, fun x -> Prefix("sinh", x)))
+pExpr.AddOperator(PrefixOperator("cosh", spaces, 4, true, fun x -> Prefix("cosh", x)))
+pExpr.AddOperator(PrefixOperator("tanh", spaces, 4, true, fun x -> Prefix("tanh", x)))
+pExpr.AddOperator(PrefixOperator("sqrt", spaces, 4, true, fun x -> Prefix("sqrt", x)))
+pExpr.AddOperator(PrefixOperator("cbrt", spaces, 4, true, fun x -> Prefix("cbrt", x)))
+pExpr.AddOperator(PostfixOperator("!", spaces, 4, true, fun x -> Prefix("!", x) ))
+
