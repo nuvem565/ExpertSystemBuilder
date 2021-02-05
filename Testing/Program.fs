@@ -443,3 +443,4 @@ let expr = pExpr.ExpressionParser
 let pLog = strCI_ws "log" >>. pipe2 expr expr (fun expr1 expr2 -> Expr("log", expr1, expr2)) .>> ws
 // for absolute numbers
 let pAbs = between (str_ws "|") (str_ws "|") expr
+let pConstants e = (strCI_ws "PI" >>% Const Math.PI <|> (strCI_ws "E" >>% Const Math.E)) e
