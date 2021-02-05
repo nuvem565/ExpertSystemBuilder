@@ -625,3 +625,5 @@ let pRule =
             <|> ( (pIfTested isNumeric "There should be numeric variable in square brackets" (betweenSquare pAnyString) ) |>> NumericVar)
         strCI_ws "X>" >>? strCI_ws "save" >>? parentheses( pipe4 pPath pRowColumn pRowColumn pToSave (fun path row column toSave -> Save(path,row,column,toSave)))
 
+    let pDefuzzify = (strCI_ws "X>" >>? strCI_ws "defuzzify") >>% Defuzzify
+
