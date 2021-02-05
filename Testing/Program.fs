@@ -814,3 +814,30 @@ let defuzzifyQualifiers () =
 
 // END OF DEFUZZIFING FUNCTION
 
+
+// FILTERING rules that have assignent to desired variable
+
+let rulesWithAssignment key (stateOfRules: RuleValue -> bool) = 
+    rules 
+    |> ResizeArray.filter (fun r -> 
+        stateOfRules(r.State) 
+        &&
+        r.ThenStatements 
+        |> List.exists (function
+            | AssignNumeric(var, _) when isNumeric key && var = key -> true
+            | AssignString(var, _) when isString key && var = key -> true
+            | AssignQualifier(q, _) when isQualifier key && q = key -> true
+            | AssignChoice(choice, _) when isChoice choice && choice = key -> true
+            | _ -> false )
+        ||
+        if r.ElseStatements.IsNone
+        then []
+        else r.ElseStatements.Value
+        |> List.exists (function
+            | AssignNumeric(var, _) when isNumeric key && var = key -> true
+            | AssignString(var, _) when isString key && var = key -> true
+            | AssignQualifier(q, _) when isQualifier key && q = key -> true
+            | AssignChoice(choice, _) when isChoice choice && choice = key -> true
+            | _ -> false ))
+    |> ResizeArray.toList
+
