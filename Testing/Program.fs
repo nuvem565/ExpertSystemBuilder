@@ -488,3 +488,8 @@ pExpr.AddOperator(PrefixOperator("sqrt", spaces, 4, true, fun x -> Prefix("sqrt"
 pExpr.AddOperator(PrefixOperator("cbrt", spaces, 4, true, fun x -> Prefix("cbrt", x)))
 pExpr.AddOperator(PostfixOperator("!", spaces, 4, true, fun x -> Prefix("!", x) ))
 
+// finished parser for expression
+let pCompleteExpression = expr .>> ws 
+
+// END OF ARITHMETIC EXPRESSION PARSER
+
