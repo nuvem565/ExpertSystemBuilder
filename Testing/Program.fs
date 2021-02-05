@@ -571,3 +571,4 @@ let pRule =
     let pReport = strCI_ws "X>" >>? optional(str_ws "\"") >>? pSentence |>> Report .>> optional(str_ws "\"")
     let pQuoted = betweenQuotations pSentence//for string literal
     let pStringVar = (pIfTested isString "string variable is not declared" (betweenSquare pAnyString)) |>> StringVar
+    let pStringExpr = sepBy1 (attempt pStringVar <|> (pQuoted |>> StringConst)) (strCI_ws "+")
