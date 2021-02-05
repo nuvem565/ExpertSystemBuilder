@@ -403,3 +403,9 @@ let pVariable =
                         :? System.Collections.Generic.KeyNotFoundException -> None |> Lower
             }) |> pipe4 pName pDescription pType pRest
 
+
+let manyVariables = 
+    key "variables" ":" >>. manyRA pVariable variables .>> ws
+
+// END OF VARIABLES PARSER
+
