@@ -531,3 +531,10 @@ let pStringLiteralOrVar =
     (betweenSquare pAnyString >>= (fun sVar -> if isString sVar then preturn sVar else fail "Not a string variable" ) |>> StringVar) 
 let pStringComparison s = s |> ((pStringLiteralOrVar .>> ws_str "=" .>>. pStringLiteralOrVar .>> ws ) |>> BoolExpr.StringComparison)
 
+
+pBool.TermParser <- choice [attempt pStringComparison
+                            attempt pChoiceComparison |>> ChoiceComparison
+                            attempt (pCompleteExpression |>> Expression |>> BoolLeaf) 
+                            attempt (parentheses boolTerm .>> ws) 
+                            attempt pTF
+                            pQualifierComparison |>> QualifierComparison ]
