@@ -554,3 +554,4 @@ let boolExpression = boolTerm .>> ws
 
 // END OF BOOLEAN EXPRESSION PARSER    
 
+let pRule =
