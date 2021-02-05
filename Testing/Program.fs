@@ -561,3 +561,10 @@ let pRule =
 
     // constituents of pThen parser
     let pChoiceValue = pfloat |>> (fun choiceConf -> if -1. <= choiceConf && choiceConf <= 1. then choiceConf else failwith "Incorrect choice confidence value. Must be between -1 and 1")
+    let pChoice = 
+        (str_ws ">" >>? pIfTested isChoice "Choice is not defined" pAnyString .>>. (ws_str "-" 
+        >>. choice [ attempt(strCI_ws "confidence")
+                     attempt(strCI_ws "conf.")
+                     attempt(strCI_ws "probability")
+                     (strCI_ws "prob.") ] 
+        >>. (attempt(ws_str "=") <|> (str_ws ":")) >>. pChoiceValue .>> ws)) |>> AssignChoice
