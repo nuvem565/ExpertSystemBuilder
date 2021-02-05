@@ -580,3 +580,28 @@ let pRule =
                 assinging >>? (attempt(pCompleteExpression) <|> (strCI_ws "\"_\"" >>% (Const 0.)) ) >>= fun b -> preturn (a, b) |>> AssignNumeric
             else
                 fail "Expected variable assignment. Given var is not declared as string nor numeric" 
+    let pAssignQualifier = 
+        (pSentence |>> trim) >>=? fun qualifierKey -> 
+            if isQualifier qualifierKey then
+                sepEndBy1 (betweenCurly(pSentence |>> trim) .>>. opt(str_ws "-" 
+                >>. choice [ attempt(strCI_ws "confidence")
+                             attempt(strCI_ws "conf.")
+                             attempt(strCI_ws "probability")
+                             (strCI_ws "prob.") ] 
+                >>. choice [ attempt(str_ws "="); (str_ws ":")]
+                >>. pfloat .>> ws) ) (optional(str_ws ",")) >>= fun b -> 
+                    if isEnum qualifierKey (fst <| List.unzip b) then 
+                        let valuesWithProperConfidence =
+                            [ for qualifierValue in b do 
+                                 match snd(qualifierValue) with
+                                 | Some confidence -> yield (fst(qualifierValue), confidence)
+                                 | None -> yield (fst(qualifierValue), 1.)]
+                        preturn(qualifierKey,valuesWithProperConfidence) |>> AssignQualifier
+                    else 
+                        match ResizeArray.tryFind (fun (q:Qualifier) -> q.unwrapQuestion = qualifierKey) qualifiers with // to find list of possible enums for qualifier
+                                    | Some q -> q.sprintfEnums
+                                    | None -> "(no such qualifier finded)"
+                        |> sprintf """Possibly incorrect enumeration in: %A\r\nSee in: %A\r\n""" b
+                        |> fail
+            else 
+                fail "No such qualifier declared"
