@@ -493,3 +493,5 @@ let pCompleteExpression = expr .>> ws
 
 // END OF ARITHMETIC EXPRESSION PARSER
 
+let pBool = new OperatorPrecedenceParser<BoolExpr,unit,unit>()
+
