@@ -549,3 +549,8 @@ pBool.AddOperator(InfixOperator(">=", spaces, 4, Associativity.Left, fun a b -> 
 pBool.AddOperator(InfixOperator("<", spaces, 4, Associativity.Left, fun a b -> Comparison("<", a, b)))
 pBool.AddOperator(InfixOperator("<=", spaces, 4, Associativity.Left, fun a b -> Comparison("<=", a, b)))
 pBool.AddOperator(PrefixOperator("NOT", spaces, 5, true, fun x -> Not(x)))
+
+let boolExpression = boolTerm .>> ws
+
+// END OF BOOLEAN EXPRESSION PARSER    
+
