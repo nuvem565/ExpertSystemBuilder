@@ -495,3 +495,5 @@ let pCompleteExpression = expr .>> ws
 
 let pBool = new OperatorPrecedenceParser<BoolExpr,unit,unit>()
 
+let boolTerm = pBool.ExpressionParser
+
