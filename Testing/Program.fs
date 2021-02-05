@@ -663,3 +663,8 @@ let pRule =
             State = Unverified
         })
     |> pipe4 pRuleName pIf pThen pElse
+
+let manyRules =
+    key "rules" ":" >>. (manyRA pRule rules) |>> (fun rRA -> rules <- indexElementsOfRules rRA; rules).>> ws
+
+// END OF RULE PARSER DEFINITION
