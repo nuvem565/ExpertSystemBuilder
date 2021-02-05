@@ -409,3 +409,15 @@ let manyVariables =
 
 // END OF VARIABLES PARSER
 
+
+let searchForVariable (var:string) = 
+    if ResizeArray.exists ( fun (variable:Variable) -> 
+        match variable.Name with 
+        | Name s -> 
+            String.Equals(s, var)
+        | _ -> false) variables 
+    then var
+    else
+        errorMsg.AppendFormat ("\tError: No such variable definition: Variable({0}) \r\n", var) |> ignore
+        var
+
