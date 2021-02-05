@@ -786,6 +786,15 @@ let rec promptQualifier key =
 let defuzzifyQualifiers () = 
     // not every fuzzified qualifier has to be defuzzified
     // defuzzification is performed using height method
+    let qualifiersForDefuzzification = ResizeArray.filter (function qualifier -> qualifier.Defuzzify.IsSome) qualifiers 
+    let outputValues = [
+        for qualifier in qualifiersForDefuzzification do
+            let key = qualifier.unwrapQuestion
+            match qualifierDict.TryGetValue (key) with
+            | true, Some membershipFunctions -> 
+                yield key, (defuzzify (qualifier) membershipFunctions)
+            | _ -> failwith (sprintf "Incorrect state: %A \nIs that list empty? \n" qualifiersForDefuzzification)
+    ]
 
     for value in outputValues do
         match ResizeArray.tryFind (function (q:Qualifier) -> q.unwrapQuestion = (fst value) && q.Defuzzify.IsSome) qualifiers with
