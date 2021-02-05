@@ -668,3 +668,22 @@ let manyRules =
     key "rules" ":" >>. (manyRA pRule rules) |>> (fun rRA -> rules <- indexElementsOfRules rRA; rules).>> ws
 
 // END OF RULE PARSER DEFINITION
+
+
+// COMPLETE PARSER
+
+let parse =
+    ws 
+    >>. optional(str_ws "LIST ONLY") 
+    >>. 
+        pBasic         >>= fun a -> 
+        basicInfo <- a
+        manyQualifiers >>= fun b ->
+        manyChoices    >>= fun c ->
+        manyVariables  >>= fun d -> 
+        manyRules      >>= fun e -> preturn ((fun a b c d e -> [|a |> Basic; b |> Qualifiers; c |> Choices; d |> Variables; e |> Rules|]) basicInfo b c d e)
+    .>> ws
+    .>> eof
+
+// END OF COMPLETE PARSER
+
