@@ -438,3 +438,6 @@ let pExpr = new OperatorPrecedenceParser<Expr,unit,unit>()
 
 let expr = pExpr.ExpressionParser
 
+// parses logarithm functions
+// "Recursive descent parsers can't parse left-recursive grammars directly. So you'll have to refactor the grammar to avoid the left-recursion"
+let pLog = strCI_ws "log" >>. pipe2 expr expr (fun expr1 expr2 -> Expr("log", expr1, expr2)) .>> ws
