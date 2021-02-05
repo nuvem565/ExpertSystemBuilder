@@ -450,3 +450,12 @@ let pFrame =
     let pColumn = (attempt( expr .>> optional(str ",") .>> ws)) 
     strCI "read" >>. parentheses(pipe3 pFramePath (expr .>> ws .>> str_ws ",") pColumn (fun path row column -> Expr.ReadFromCSV(path, row, column)))
 
+pExpr.TermParser <- choice[ number |>> Expr.Const
+                            pConstants
+                            parentheses expr
+                            pAbs |>> fun x -> Prefix("+",x)
+                            pLog
+                            pChoiceMembership
+                            pFrame
+                            bracketedVariable ]
+
