@@ -719,3 +719,34 @@ let rec promptChoice name =
             promptChoice name
             
     else failwith (sprintf "Incorrect choice name - %A" name)
+
+let rec recPrompt var =
+    if isString var then 
+        let (Some variableRA) = ResizeArray.tryFind (fun (v:Variable) -> if v.unwrapName = var then true else false) variables
+        let userInput = prompt (sprintf "String variable %s - %s in %s dictionary is not defined.\nPlease, set it:" var variableRA.unwrapDescription "string") 
+        match (ws >>. pAnyString) (new CharStream<String>(userInput, 0, userInput.Length)) with
+        | output when output.Status = Ok -> stringVariableDict.Item(var) <- output.Result |> Some
+        | _ -> 
+            printfn "Incorrect string. Expected ASCII letters, digits or '_' symbol"
+            recPrompt var
+    elif isNumeric var then 
+        let (Some variableRA) = ResizeArray.tryFind (fun (v:Variable) -> if v.unwrapName = var then true else false) variables
+        let userMessage = sprintf "Numeric variable %s - %s in numeric dictionary is not defined. It should be in range:\nUpper limit = %A\nLower limit = %A\nPlease, set it:" var variableRA.unwrapDescription variableRA.UpperLimit variableRA.LowerLimit
+        let userInput = prompt userMessage 
+        match ((ws >>. expr) (new CharStream<unit>(userInput, 0, userInput.Length))) with 
+        | output when output.Status = Ok -> 
+            let evaluated = eval output.Result
+            if inRange var evaluated then 
+                numericVariableDict.Item(var) <- evaluated |> Some
+            else 
+                printfn "Variable %s is not in predefined range: %A" var (ResizeArray.find (fun (v:Variable) -> v.unwrapName = var) variables).getRange
+                recPrompt var           
+        | _ -> 
+            printfn "Incorrect expression"
+            recPrompt var
+    (*  Should show list od enumerations to the user (with number annotations) 
+        then take comma separated list of this numers from the user input 
+        and set corresponding enumerations to dict *)
+    else
+        failwith "No such variable in strings nor numerics dictionaries"
+
