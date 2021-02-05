@@ -522,3 +522,6 @@ let pQualifierComparison = //returns list of possible states of qualifier
         | Some qualifier ->  failwith (sprintf "Possibly incorrect values of qualifier: \n%A\n in {...} brackets" qualifier)
         | _ -> failwith "Reference to non-existing qualifier value"
     ) |> pipe3 pQuestion pNot pEnums 
+
+let pChoiceComparison s = (strCI_ws "choice" >>. pAnyString .>> ws) s
+
