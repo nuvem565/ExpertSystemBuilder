@@ -627,3 +627,8 @@ let pRule =
 
     let pDefuzzify = (strCI_ws "X>" >>? strCI_ws "defuzzify") >>% Defuzzify
 
+    let pDelay = 
+        let pQualifier = (pIfTested isQualifierName "Expected qualifier name in square brackets" (betweenSquare pAnyString)) |>> QualifierName
+        let pVarToDelay = strCI_ws "Q" >>. pQualifier
+        strCI_ws "X>" >>? strCI_ws "delay" >>? parentheses( (pipe2 (pVarToDelay .>> strCI_ws ",") pQualifier (fun q1 q2 -> Delay(q1,q2) ))) .>> ws
+
