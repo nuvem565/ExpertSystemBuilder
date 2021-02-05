@@ -780,3 +780,28 @@ let rec promptQualifier key =
 
 // END OF PROMPT FUNCTIONS
 
+
+// DEFUZZIFING FUNCTION
+
+let defuzzifyQualifiers () = 
+    // not every fuzzified qualifier has to be defuzzified
+    // defuzzification is performed using height method
+
+    for value in outputValues do
+        match ResizeArray.tryFind (function (q:Qualifier) -> q.unwrapQuestion = (fst value) && q.Defuzzify.IsSome) qualifiers with
+        | Some q -> 
+            let (Some defuzzifiedVar) = q.Defuzzify // assured by finding above
+            match ResizeArray.tryFind (function (v:Variable) -> v.unwrapName = defuzzifiedVar) variables with
+            | Some vRA ->
+                let range = vRA.getRange
+                let newValue = snd value
+                numericVariableDict.Item defuzzifiedVar <- 
+                    if newValue > snd(range) then snd(range) |> Some
+                    elif newValue < fst(range) then fst(range) |> Some
+                    else newValue |> Some
+            | None -> failwith (sprintf "Cannot find variable %A in memory" defuzzifiedVar)
+        | None -> failwith (sprintf "No variable to defuzzify value %A of qualifier %A. Incorrect state." (snd value) (fst value))
+    outputValues
+
+// END OF DEFUZZIFING FUNCTION
+
