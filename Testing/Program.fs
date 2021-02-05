@@ -444,3 +444,4 @@ let pLog = strCI_ws "log" >>. pipe2 expr expr (fun expr1 expr2 -> Expr("log", ex
 // for absolute numbers
 let pAbs = between (str_ws "|") (str_ws "|") expr
 let pConstants e = (strCI_ws "PI" >>% Const Math.PI <|> (strCI_ws "E" >>% Const Math.E)) e
+let pChoiceMembership s = (strCI_ws "choice" >>. (pIfTested (fun str -> isChoice str)  "Incorrect choice name" pAnyString) |>> ChoiceMembership .>> ws) s
