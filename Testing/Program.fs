@@ -641,3 +641,12 @@ let pRule =
             <|> ( (pIfTested isNumeric "There should be numeric variable in square brackets" (betweenSquare pAnyString) ) |>> NumericVar)
         strCI_ws "X>" >>? strCI_ws "read" >>? parentheses( pipe4 pPath pRowColumn pRowColumn toRead (fun path row column toRead -> Read(path,row,column,toRead)))
         
+    let pOperations =  sepBy1 ( choice [pChoice
+                                        pDelay
+                                        pClear
+                                        pRead
+                                        pDefuzzify
+                                        pSave
+                                        pReport
+                                        pAssignVariable
+                                        pAssignQualifier] ) (key "and" ":") 
