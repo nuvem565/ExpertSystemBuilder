@@ -703,3 +703,19 @@ let mutable lookUpNumeric = declare<string -> float>
 
 
 // PROMPT functions - questioning user for values
+
+let rec promptChoice name = 
+    if isChoice name then
+        let (Some choiceRA) = ResizeArray.tryFind (fun (tryChoice:Choice) -> match tryChoice with {Name = nameFound} -> nameFound = name | _ -> false) choices
+        let userInput = prompt (sprintf "Choice %s is not defined. Please, set it by defining truthness value (0-1):" name)
+        match (ws >>. pfloat) (new CharStream<String>(userInput, 0, userInput.Length)) with
+        | output when output.Status = Ok && 0. <= output.Result && output.Result <= 1. -> 
+            choiceDict.Item name <- output.Result |> Some
+        | output when output.Status = Ok -> 
+            printfn "Incorrect choice %A truthness value. Must be a number between 0 and 1." name
+            promptChoice name
+        | _ ->
+            printfn "Incorrect choice %A truthness value. Must be a number between 0 and 1." name
+            promptChoice name
+            
+    else failwith (sprintf "Incorrect choice name - %A" name)
