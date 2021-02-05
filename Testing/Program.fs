@@ -687,3 +687,17 @@ let parse =
 
 // END OF COMPLETE PARSER
 
+
+
+////////// INTERPRETER 
+(* 
+Mechanizm wnioskowania:
+*)
+
+let mutable evalBool = declare<BoolExpr -> float>
+let mutable eval = declare<Expr -> float>
+let mutable lookUpString = declare<string -> string>
+let mutable lookUpQualifier = declare<string -> string list -> float>
+let mutable lookUpNumeric = declare<string -> float>
+
+
