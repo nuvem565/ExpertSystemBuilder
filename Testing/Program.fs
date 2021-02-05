@@ -572,3 +572,11 @@ let pRule =
     let pQuoted = betweenQuotations pSentence//for string literal
     let pStringVar = (pIfTested isString "string variable is not declared" (betweenSquare pAnyString)) |>> StringVar
     let pStringExpr = sepBy1 (attempt pStringVar <|> (pQuoted |>> StringConst)) (strCI_ws "+")
+    let pAssignVariable = 
+        betweenSquare pAnyString >>=? fun a -> 
+            if isString a then 
+                assinging >>? pStringExpr .>> ws >>= fun b -> preturn (a, b) |>> AssignString 
+            elif isNumeric a then
+                assinging >>? (attempt(pCompleteExpression) <|> (strCI_ws "\"_\"" >>% (Const 0.)) ) >>= fun b -> preturn (a, b) |>> AssignNumeric
+            else
+                fail "Expected variable assignment. Given var is not declared as string nor numeric" 
