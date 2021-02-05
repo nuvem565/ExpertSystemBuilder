@@ -421,3 +421,14 @@ let searchForVariable (var:string) =
         errorMsg.AppendFormat ("\tError: No such variable definition: Variable({0}) \r\n", var) |> ignore
         var
 
+// search for numeric variable, if it is not numeric, check if it is a variable at all
+let bracketedVariable = 
+    betweenSquare pAnyString
+    >>= fun a -> 
+        if isNumeric a then
+            preturn (a |> Variable)
+        else
+            match isVariable a with
+            | Some _ -> fail (sprintf "Variable [%s] is not numeric type" a)
+            | _ -> fail (sprintf "Variable [%s] doesn't exists" a)
+
