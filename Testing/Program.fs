@@ -525,3 +525,9 @@ let pQualifierComparison = //returns list of possible states of qualifier
 
 let pChoiceComparison s = (strCI_ws "choice" >>. pAnyString .>> ws) s
 
+// String comparison parser
+let pStringLiteralOrVar = 
+    (betweenQuotations pSentence |>> StringConst) <|> //function checks if [VARIABLE] is string
+    (betweenSquare pAnyString >>= (fun sVar -> if isString sVar then preturn sVar else fail "Not a string variable" ) |>> StringVar) 
+let pStringComparison s = s |> ((pStringLiteralOrVar .>> ws_str "=" .>>. pStringLiteralOrVar .>> ws ) |>> BoolExpr.StringComparison)
+
