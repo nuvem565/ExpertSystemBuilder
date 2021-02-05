@@ -445,3 +445,8 @@ let pLog = strCI_ws "log" >>. pipe2 expr expr (fun expr1 expr2 -> Expr("log", ex
 let pAbs = between (str_ws "|") (str_ws "|") expr
 let pConstants e = (strCI_ws "PI" >>% Const Math.PI <|> (strCI_ws "E" >>% Const Math.E)) e
 let pChoiceMembership s = (strCI_ws "choice" >>. (pIfTested (fun str -> isChoice str)  "Incorrect choice name" pAnyString) |>> ChoiceMembership .>> ws) s
+let pFrame = 
+    let pFramePath = (attempt(betweenQuotations pSentence |>> Expr.PathForFrame) <|> (betweenSquare pAnyString |>> Expr.Variable) ) .>> str_ws ","
+    let pColumn = (attempt( expr .>> optional(str ",") .>> ws)) 
+    strCI "read" >>. parentheses(pipe3 pFramePath (expr .>> ws .>> str_ws ",") pColumn (fun path row column -> Expr.ReadFromCSV(path, row, column)))
+
