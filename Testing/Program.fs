@@ -558,3 +558,6 @@ let pRule =
     let assinging = strCI_ws "is" >>. strCI_ws "given" >>. strCI_ws "the" >>. strCI_ws "value"
     let pRuleName = opt (key "rule" ":" >>. pAnyString .>> ws)
     let pIf = key "IF" ":" >>. boolExpression .>> ws
+
+    // constituents of pThen parser
+    let pChoiceValue = pfloat |>> (fun choiceConf -> if -1. <= choiceConf && choiceConf <= 1. then choiceConf else failwith "Incorrect choice confidence value. Must be between -1 and 1")
