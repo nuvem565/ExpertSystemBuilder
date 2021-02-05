@@ -605,3 +605,13 @@ let pRule =
                         |> fail
             else 
                 fail "No such qualifier declared"
+
+    let pClear = 
+        strCI_ws "X>" >>? strCI_ws "clear" >>? parentheses(
+            choice [attempt(strCI_ws "Q" >>. sepEndBy1 ((pIfTested isQualifierName "There should be qualifier name in square brackets" (betweenSquare pAnyString)) 
+                    |>> Terminal.QualifierName) (str_ws ","))
+                    attempt(strCI_ws "S" >>. sepEndBy1 ((pIfTested isString "There should be string variable in square brackets" (betweenSquare pAnyString)) 
+                    |>> Terminal.StringVar) (str_ws ","))
+                    attempt(strCI_ws "N" >>. sepEndBy1 ((pIfTested isNumeric "There should be numeric variable in square brackets" (betweenSquare pAnyString) ) 
+                    |>> Terminal.NumericVar) (str_ws ","))
+                    (strCI_ws "C" >>. sepEndBy1 ((pIfTested isChoice "There should be choice name" pAnyString ) |>> Terminal.ChoiceVar) (str_ws ","))]) |>> Clear
