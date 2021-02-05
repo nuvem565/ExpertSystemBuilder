@@ -538,3 +538,14 @@ pBool.TermParser <- choice [attempt pStringComparison
                             attempt (parentheses boolTerm .>> ws) 
                             attempt pTF
                             pQualifierComparison |>> QualifierComparison ]
+
+pBool.AddOperator(InfixOperator("and:", spaces, 2, Associativity.Left, fun a b -> Logical("AND", a, b)))
+pBool.AddOperator(InfixOperator("AND", spaces, 2, Associativity.Left, fun a b -> Logical("AND", a, b)))
+pBool.AddOperator(InfixOperator("OR", spaces, 1, Associativity.Left, fun a b -> Logical("OR", a, b)))
+pBool.AddOperator(InfixOperator("=", spaces, 3, Associativity.Left, fun a b -> Comparison("=", a, b)))
+pBool.AddOperator(InfixOperator("==", spaces, 3, Associativity.Left, fun a b -> Comparison("=", a, b)))
+pBool.AddOperator(InfixOperator(">", spaces, 4, Associativity.Left, fun a b -> Comparison(">", a, b)))
+pBool.AddOperator(InfixOperator(">=", spaces, 4, Associativity.Left, fun a b -> Comparison(">=", a, b)))
+pBool.AddOperator(InfixOperator("<", spaces, 4, Associativity.Left, fun a b -> Comparison("<", a, b)))
+pBool.AddOperator(InfixOperator("<=", spaces, 4, Associativity.Left, fun a b -> Comparison("<=", a, b)))
+pBool.AddOperator(PrefixOperator("NOT", spaces, 5, true, fun x -> Not(x)))
