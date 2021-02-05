@@ -557,3 +557,4 @@ let boolExpression = boolTerm .>> ws
 let pRule =
     let assinging = strCI_ws "is" >>. strCI_ws "given" >>. strCI_ws "the" >>. strCI_ws "value"
     let pRuleName = opt (key "rule" ":" >>. pAnyString .>> ws)
+    let pIf = key "IF" ":" >>. boolExpression .>> ws
