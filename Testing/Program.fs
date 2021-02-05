@@ -652,3 +652,14 @@ let pRule =
                                         pAssignQualifier] ) (key "and" ":") 
     let pThen = key "THEN" ":" >>. pOperations .>> ws
     let pElse = opt( pIfTested (fun a -> basicInfo.Probability <> (ProbabilityMode.Fuzzy |> Probability)) "The else part isn't allowed in fuzzy mode" (key "ELSE" ":" >>. pOperations .>> ws) )
+    
+    ( fun b c d e ->
+        {
+            Number = 0 // will be overwritten to the correct index
+            Name = b
+            IfClauses = c
+            ThenStatements = d
+            ElseStatements = e
+            State = Unverified
+        })
+    |> pipe4 pRuleName pIf pThen pElse
