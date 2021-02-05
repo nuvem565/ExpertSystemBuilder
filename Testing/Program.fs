@@ -497,3 +497,7 @@ let pBool = new OperatorPrecedenceParser<BoolExpr,unit,unit>()
 
 let boolTerm = pBool.ExpressionParser
 
+// component functions
+let pTrue = strCI_ws "TRUE" >>% LogicalConst true
+let pFalse = strCI_ws "FALSE" >>% LogicalConst false
+let pTF = pTrue <|> pFalse .>> ws
