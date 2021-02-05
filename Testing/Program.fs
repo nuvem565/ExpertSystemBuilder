@@ -501,3 +501,24 @@ let boolTerm = pBool.ExpressionParser
 let pTrue = strCI_ws "TRUE" >>% LogicalConst true
 let pFalse = strCI_ws "FALSE" >>% LogicalConst false
 let pTF = pTrue <|> pFalse .>> ws
+
+// parsing Qualifier comparisons from syntax rules
+let pQualifierComparison = //returns list of possible states of qualifier
+    let sentenceSymbols = "_ ?!.,-=+-*%$/~<>:;\'\\()[]ąęćłńóśżź"
+    let pQuestion = 
+        many1CharsTill (letter <|> digit <|> anyOf sentenceSymbols) ( lookAhead (strCI_ws "NOT" <|> str_ws "{") ) 
+        |>> fun str -> str.Trim(',',' ')
+    let pNot = ws >>. strCI_ws "NOT" >>% true <|>% false .>> ws 
+    let pEnums = sepBy1 (betweenCurly pSentence) (str_ws "OR") <??> "expected sequence of {SOMETHING} separated by OR with possible NOT at the beginning" .>> ws
+    
+    (fun question isNot possibleValues -> 
+        match findQualifierByQuestion question with // search for qualifier
+        | Some qualifier when possibleValues |> List.forall (fun posValue -> List.contains posValue qualifier.unwrapEnums) -> // guard for non-existing enums
+            if isNot then // case of NOT before expression
+                let alterValues = List.except possibleValues qualifier.unwrapEnums
+                question, [ for value in alterValues do yield value ]
+            else
+                question, [ for value in possibleValues do yield value ]
+        | Some qualifier ->  failwith (sprintf "Possibly incorrect values of qualifier: \n%A\n in {...} brackets" qualifier)
+        | _ -> failwith "Reference to non-existing qualifier value"
+    ) |> pipe3 pQuestion pNot pEnums 
