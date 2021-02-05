@@ -632,3 +632,12 @@ let pRule =
         let pVarToDelay = strCI_ws "Q" >>. pQualifier
         strCI_ws "X>" >>? strCI_ws "delay" >>? parentheses( (pipe2 (pVarToDelay .>> strCI_ws ",") pQualifier (fun q1 q2 -> Delay(q1,q2) ))) .>> ws
 
+    let pRead = 
+        let pPath = (attempt(betweenSquare (pIfTested (fun str -> isString str) (sprintf "Expected string variable. Incorrect one inputed." ) pAnyString) |>> StringVar)
+                <|> (betweenQuotations pSentence |>> StringConst)) .>> str_ws ","
+        let pRowColumn = (pCompleteExpression .>> str_ws ",") 
+        let toRead = 
+            attempt( (pIfTested isQualifierName "There should be qualifier name in square brackets" (betweenSquare pAnyString)) |>> QualifierName) 
+            <|> ( (pIfTested isNumeric "There should be numeric variable in square brackets" (betweenSquare pAnyString) ) |>> NumericVar)
+        strCI_ws "X>" >>? strCI_ws "read" >>? parentheses( pipe4 pPath pRowColumn pRowColumn toRead (fun path row column toRead -> Read(path,row,column,toRead)))
+        
