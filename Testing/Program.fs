@@ -615,3 +615,13 @@ let pRule =
                     attempt(strCI_ws "N" >>. sepEndBy1 ((pIfTested isNumeric "There should be numeric variable in square brackets" (betweenSquare pAnyString) ) 
                     |>> Terminal.NumericVar) (str_ws ","))
                     (strCI_ws "C" >>. sepEndBy1 ((pIfTested isChoice "There should be choice name" pAnyString ) |>> Terminal.ChoiceVar) (str_ws ","))]) |>> Clear
+
+    let pSave = 
+        let pPath = (attempt(betweenSquare (pIfTested (fun str -> isString str) (sprintf "Expected string variable. Incorrect one inputed." ) pAnyString) |>> StringVar)
+            <|> (betweenQuotations pSentence |>> StringConst)) .>> str_ws ","
+        let pRowColumn = (pCompleteExpression .>> str_ws ",") 
+        let pToSave = 
+            attempt( (pIfTested isQualifierName "There should be qualifier name in square brackets" (betweenSquare pAnyString)) |>> QualifierName) 
+            <|> ( (pIfTested isNumeric "There should be numeric variable in square brackets" (betweenSquare pAnyString) ) |>> NumericVar)
+        strCI_ws "X>" >>? strCI_ws "save" >>? parentheses( pipe4 pPath pRowColumn pRowColumn pToSave (fun path row column toSave -> Save(path,row,column,toSave)))
+
