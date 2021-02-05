@@ -750,3 +750,33 @@ let rec recPrompt var =
     else
         failwith "No such variable in strings nor numerics dictionaries"
 
+let rec promptQualifier key = 
+    if isQualifier key then 
+        let q = qualifiers.Find(fun q -> key = q.unwrapQuestion)
+        printfn "\r\nQualifier %i with body (question) \"%s\" is not defined.\nPlease, choose from the list: \r\n" q.Number key
+        q.printfEnums
+        let userInput = prompt (sprintf "\r\ntyping chosen numbers bodies (without any brackets and quotations) separated by comma ','") 
+        let pEnums s = ( ws >>. sepEndBy (pint32 .>> optional (ws_str ")")) (str_ws ",") ) s
+        match pEnums (new CharStream<String>(userInput, 0, userInput.Length)) with // parsing input in order to get index of enums to assign them
+        | output when output.Status = Ok -> 
+            if output.Result = [] then
+                qualifierDict.Item key <- Some []
+            elif output.Result |> List.forall (fun num -> num > 0  && num <= q.Enumerations.Length) then
+                qualifierDict.Item key <- 
+                    [ for num in output.Result do yield (q.unwrapEnums.Item (num - 1)),1.] //each user defined enum has default membership level equal to 1.0
+                    |> Some
+            else
+                printfn "Incorrect assignment to qualifier. \r\n%A \r\nShould be: \r\n1 \r\nOR \r\n9, 4" output.Error
+                promptQualifier key
+        | output -> 
+            printfn "Incorrect assignment to qualifier. \r\n%A \r\nShould be: \r\n1 \r\nOR \r\n9, 4" output.Error
+            promptQualifier key
+    else failwith (sprintf "No such qualifier: %A" key)
+
+// 1. Try to get value directly from dict
+// 2. Then, try to get it from the "then" part of rule
+//    - If it doesn't 
+// 3. Still trying get it, ask user directly
+
+// END OF PROMPT FUNCTIONS
+
