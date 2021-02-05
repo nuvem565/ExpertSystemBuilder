@@ -650,3 +650,4 @@ let pRule =
                                         pReport
                                         pAssignVariable
                                         pAssignQualifier] ) (key "and" ":") 
+    let pThen = key "THEN" ":" >>. pOperations .>> ws
