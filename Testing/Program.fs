@@ -570,3 +570,4 @@ let pRule =
         >>. (attempt(ws_str "=") <|> (str_ws ":")) >>. pChoiceValue .>> ws)) |>> AssignChoice
     let pReport = strCI_ws "X>" >>? optional(str_ws "\"") >>? pSentence |>> Report .>> optional(str_ws "\"")
     let pQuoted = betweenQuotations pSentence//for string literal
+    let pStringVar = (pIfTested isString "string variable is not declared" (betweenSquare pAnyString)) |>> StringVar
