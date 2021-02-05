@@ -435,3 +435,6 @@ let bracketedVariable =
 
 // ustalenie kolejności wykonywania działań
 let pExpr = new OperatorPrecedenceParser<Expr,unit,unit>()
+
+let expr = pExpr.ExpressionParser
+
