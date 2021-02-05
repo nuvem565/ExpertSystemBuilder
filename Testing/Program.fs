@@ -432,3 +432,6 @@ let bracketedVariable =
             | Some _ -> fail (sprintf "Variable [%s] is not numeric type" a)
             | _ -> fail (sprintf "Variable [%s] doesn't exists" a)
 
+
+// ustalenie kolejności wykonywania działań
+let pExpr = new OperatorPrecedenceParser<Expr,unit,unit>()
