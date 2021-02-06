@@ -1032,3 +1032,39 @@ let lookUpChoice name =
         | _ ->  failwith (sprintf "No such choice - %A" name)
     | _ -> failwith (sprintf "No such choice - %A" name)
 
+lookUpNumeric <-
+    fun key ->
+        match numericVariableDict.TryGetValue(key), ResizeArray.tryFind (function (q: Qualifier) -> match q.Defuzzify with Some numToDefuzz -> numToDefuzz = key | _ -> false) qualifiers with
+        | (true, _), Some q -> 
+            let qualifierKey = q.unwrapQuestion
+            match qualifierDict.TryGetValue (qualifierKey) with
+            | true, Some values -> 
+                let defuzzifiedVal = defuzzify q values
+                numericVariableDict.Item key <- Some defuzzifiedVal
+                defuzzifiedVal
+            | true, None -> 
+                lookUpQualifier qualifierKey q.unwrapEnums |> ignore
+                let (_, Some(values)) = qualifierDict.TryGetValue (qualifierKey)
+                let defuzzifiedVal = defuzzify q values
+                numericVariableDict.Item key <- Some defuzzifiedVal
+                defuzzifiedVal
+            | _ -> failwith "No correspond enumeration in enums dictionary"
+        | (true, Some value), _ -> value
+        | (true, _), _ ->
+            let usedRules = unverifiedRulesWithAssignment key
+            executeRules key usedRules |> ignore
+            match numericVariableDict.TryGetValue key with
+            | true, Some value -> 
+                printfn "Numeric variable %s, value: %f, infered from rules:" key value
+                for r in usedRules do
+                    if r.Name.IsSome
+                    then printfn "Rule: %s, nr: %i" r.Name.Value r.Number
+                    else printfn "Rule nr: %i" r.Number 
+                value
+            | true, _ -> 
+                printfn "\r\nNo rule for numeric variable '%s' in the collection of unverified rules" key
+                recPrompt key
+                numericVariableDict.[key].Value
+            | _ -> failwith (sprintf "No such numeric variable defined: %s" key)
+        | _ -> failwith (sprintf "No such numeric variable defined: %s" key)
+            
