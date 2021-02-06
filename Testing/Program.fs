@@ -863,3 +863,7 @@ let rec evalStringExpression (acc:string) = function //implicit one argument
 
 let evalOperation operation firingLevel = 
     match operation with
+    | AssignString(var, str) -> 
+        if isString var then
+            stringVariableDict.Item var <- evalStringExpression "" str |> Some
+        else failwith (sprintf "No such string variable declared: %A" var)
