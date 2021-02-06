@@ -991,3 +991,13 @@ let evalElse r firingLevel =
         for operation in elses do
             evalOperation operation firingLevel
     | None -> ()            
+    
+let interpretRule (r:Rule) = 
+    let (FuzzyThreshold fuzzyThreshold) = basicInfo.FuzzyThreshold
+    let ifFiringLevel = evalBool r.IfClauses
+    if ifFiringLevel > fuzzyThreshold then
+        evalThen r ifFiringLevel
+        if basicInfo.Derivation <> Derivation(Derivation.AllRulesUsed) then setRule r ifFiringLevel
+    else
+        evalElse r ifFiringLevel // if rule is not on "Selected" list
+        if basicInfo.Derivation <> Derivation(Derivation.AllRulesUsed) then setRule r ifFiringLevel
