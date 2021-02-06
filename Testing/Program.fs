@@ -1001,3 +1001,6 @@ let interpretRule (r:Rule) =
     else
         evalElse r ifFiringLevel // if rule is not on "Selected" list
         if basicInfo.Derivation <> Derivation(Derivation.AllRulesUsed) then setRule r ifFiringLevel
+               
+let executeSelectedRules (rl: Rule list) = List.iter (interpretRule) rl; rl
+
