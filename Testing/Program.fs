@@ -928,3 +928,4 @@ let evalOperation operation firingLevel =
             | StringVar str -> if stringVariableDict.ContainsKey str then stringVariableDict.Item str <- None
             | ChoiceVar c -> if choiceDict.ContainsKey c then choiceDict.Item c <- None
             | _ -> failwith "incorrect state. Should be Q, N, S or C"
+    | Defuzzify -> defuzzifyQualifiers () |> ignore
