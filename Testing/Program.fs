@@ -984,3 +984,10 @@ let evalOperation operation firingLevel =
 let evalThen r firingLevel = 
     for operation in r.ThenStatements do
         evalOperation operation firingLevel
+
+let evalElse r firingLevel = 
+    match r.ElseStatements with
+    | Some elses ->
+        for operation in elses do
+            evalOperation operation firingLevel
+    | None -> ()            
