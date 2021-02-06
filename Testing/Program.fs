@@ -846,3 +846,18 @@ let unverifiedRulesWithAssignment name = rulesWithAssignment name (function Rule
 let truOrFalseRulesWithAssignment name = rulesWithAssignment name (function RuleValue.True _ | RuleValue.False -> true | _ -> false)
 
 // END OF FILTERING FUNCTION
+
+
+// EXECUTING rules - its then or else parts
+
+let rec evalStringExpression (acc:string) = function //implicit one argument
+    | [] -> acc
+    | (StringConst literal) :: rest -> 
+        evalStringExpression (acc + literal) rest
+    | (StringVar var) :: rest -> 
+        if isString var then
+            evalStringExpression (acc + lookUpString var) rest
+        else
+            failwith "No such string declared"
+    | _ -> failwith "Illegal state"
+
