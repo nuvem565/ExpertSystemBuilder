@@ -1092,3 +1092,50 @@ lookUpString <-
         | _ -> failwith (sprintf "No such string variable defined: %s" key)
 
 // END OF LOOKUPS
+
+// ARITHMETIC EXPRESSION INTERPRETER
+
+eval <- 
+    fun (x : Expr) ->
+        match x with 
+        | Expr.Const x -> x
+        | Expr.Variable var -> lookUpNumeric var 
+        | Prefix("-", x) -> - (eval(x))
+        | Expr("+", a, b) -> eval a + eval b
+        | Expr("-", a, b) -> eval a - eval b
+        | Expr("*", a, b) -> eval a * eval b
+        | Expr("/", a, b) -> eval a / eval b
+        | Expr("modulo", a, b) -> eval a % eval b
+        | Expr("^", a, b) -> Math.Pow(eval a, eval b)
+        | ReadFromCSV(path, row, column) -> 
+            let finalPath = 
+                match path with
+                | PathForFrame p -> p
+                | Variable var when isString var -> 
+                    match stringVariableDict.Item var with
+                    | Some v -> v
+                    | None -> failwith (sprintf "Incorrect state. String variable %A is not defined" var)
+                | _ -> failwith "Incorrect state - in finding path to the CSV file."
+            CSVget finalPath (eval row) (eval column)
+        | ChoiceMembership str -> lookUpChoice str
+        | Prefix("sqrt", x) -> Math.Sqrt (eval x)
+        | Prefix("cbrt", x) -> Math.Pow(eval x, 1./3.)
+        | Prefix("!", x) -> factorial (eval x)
+        | Expr("log", a, b) -> Math.Log (eval b, eval a)
+        | Prefix("ln", x) -> Math.Log (eval x)
+        | Prefix("exp", x) -> Math.Exp (eval x)
+        | Prefix("sin", x) -> Math.Sin (eval x)
+        | Prefix("cos", x) -> Math.Cos (eval x)
+        | Prefix("tan", x) -> Math.Tan (eval x)
+        | Prefix("cot", x) -> 1.0/(Math.Tan (eval x))
+        | Prefix("asin", x) -> Math.Asin (eval x)
+        | Prefix("acos", x) -> Math.Acos (eval x)
+        | Prefix("atan", x) -> Math.Atan (eval x)
+        | Prefix("acot", x) -> Math.Atan (1.0/eval x)
+        | Prefix("sinh", x) -> Math.Sinh (eval x)
+        | Prefix("cosh", x) -> Math.Cosh (eval x)
+        | Prefix("tanh", x) -> Math.Tanh (eval x)
+        | Prefix("+", x) -> abs (eval(x))
+        | _ -> errorMsg.AppendFormat ("Incorrect expression\r\n") |> ignore; nan
+
+// END OF ARITHMETIC EXPRESSION INTERPRETER
