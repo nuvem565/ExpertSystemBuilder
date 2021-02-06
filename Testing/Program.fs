@@ -1,4 +1,7 @@
-﻿module TestingES
+﻿//Remember to use following command in packet manager before building up the project
+//Update-Package –reinstall FParsec
+
+module TestingES
 
 open FParsec
 open System
@@ -1018,6 +1021,9 @@ let executeRules (key:string) (rl:Rule list) =
         executeSelectedRules rl
 
 // END OF EXECUTING RULES
+
+
+// LOOKUP functions - finished getter which runs suitable rules or questions the user for values 
 let lookUpChoice name = 
     match choiceDict.TryGetValue name with 
     | true, Some value -> value
