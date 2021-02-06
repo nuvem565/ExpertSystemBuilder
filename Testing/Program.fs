@@ -978,3 +978,5 @@ let evalOperation operation firingLevel =
         | _, Some q2 -> failwith  "Incorrect state. Qualifier to be delayed doesn't exists" 
         | Some q1, _ -> failwith  "Incorrect state. Qualifier of pervious value doesn't exists" 
         | _ , _ -> failwith  "Incorrect state. Qualifier of pervious value doesn't exists" 
+    | Report rep -> commandLog.AppendFormat ("\r\nReport: {0}", rep) |> ignore
+        
