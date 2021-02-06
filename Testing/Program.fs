@@ -11,6 +11,13 @@ open FSharpx.Collections
 open Microsoft.FSharp.Collections
 open System.Collections.Generic
 
+// custom modules
+open TypeDefinitions
+open SimpleFunctions
+open SimpleParsers
+open Printers
+
+
 ////////// IMPORT OF INPUT TEXT
 
 let errorMsg = new StringBuilder()
