@@ -929,3 +929,25 @@ let evalOperation operation firingLevel =
             | ChoiceVar c -> if choiceDict.ContainsKey c then choiceDict.Item c <- None
             | _ -> failwith "incorrect state. Should be Q, N, S or C"
     | Defuzzify -> defuzzifyQualifiers () |> ignore
+    | Save(path, row, column, toSave) -> 
+        let newPath =
+            match path with
+                | StringConst pathStr -> pathStr
+                | StringVar var -> (stringVariableDict.Item var).Value
+                | _ -> failwith (sprintf "Incorrect state. The path for saving is not recognized as string variable nor string literal")
+        match toSave with
+        | Terminal.NumericVar num ->
+            CSVset newPath (eval row) (eval column) (lookUpNumeric num)
+        | QualifierName name -> 
+            match ResizeArray.tryFind (function (q:Qualifier) -> q.unwrapName = name) qualifiers with
+                | Some q -> 
+                    match qualifierDict.Item (q.unwrapQuestion), q.unwrapEnums with
+                    | Some qualifierValues, enums -> 
+                        for i = 0 to enums.Length - 1 do
+                            match List.tryFind (fun value -> fst(value) = enums.[i]) qualifierValues with
+                            | Some value -> CSVset newPath (eval row) (eval column + (float i)) (Y(value))
+                            | None -> CSVset newPath (eval row) (eval column + (float i)) 0.
+                    | None, enums -> 
+                        for i = 0 to enums.Length - 1 do
+                            CSVset newPath (eval row) (eval column + (float i)) 0.
+                | None -> failwith (sprintf "There is no qualifier with name: %A" name)
