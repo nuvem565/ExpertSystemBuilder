@@ -431,6 +431,8 @@ let searchForVariable (var:string) =
         errorMsg.AppendFormat ("\tError: No such variable definition: Variable({0}) \r\n", var) |> ignore
         var
 
+// ARITHMETIC EXPRESSION PARSER
+
 // search for numeric variable, if it is not numeric, check if it is a variable at all
 let bracketedVariable = 
     betweenSquare pAnyString
