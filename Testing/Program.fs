@@ -1018,3 +1018,17 @@ let executeRules (key:string) (rl:Rule list) =
         executeSelectedRules rl
 
 // END OF EXECUTING RULES
+let lookUpChoice name = 
+    match choiceDict.TryGetValue name with 
+    | true, Some value -> value
+    | true, None -> 
+        let selectedRules = unverifiedRulesWithAssignment name
+        executeRules name selectedRules |> ignore
+        match choiceDict.TryGetValue name with
+        | true, Some value -> value
+        | true, None -> 
+            promptChoice name
+            match choiceDict.TryGetValue name with | true, Some value -> value | _ -> failwith "Incorrect state."
+        | _ ->  failwith (sprintf "No such choice - %A" name)
+    | _ -> failwith (sprintf "No such choice - %A" name)
+
