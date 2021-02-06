@@ -881,3 +881,29 @@ let evalOperation operation firingLevel =
                     else correctNumber |> Some
             | _ -> failwith (sprintf "Cannot find variable %A in memory" var)
         else failwith (sprintf "No such numeric variable declared: %A" var)
+    | AssignQualifier(q, vl) -> 
+        match qualifierDict.TryGetValue q with
+        | true, Some currentValues -> 
+            qualifierDict.Item q <-  
+                [ 
+                    let enums = (ResizeArray.find (fun (qualifier:Qualifier) -> qualifier.unwrapQuestion = q) qualifiers).unwrapEnums
+                    for enum in enums do
+                        match List.tryFind (function valueFromAssignment -> enum = fst(valueFromAssignment)) vl, List.tryFind (function current -> enum = fst(current)) currentValues with
+                        | Some valueFromAssignment, Some currentValue -> 
+                            let assignmentImplication = fuzzyAND firingLevel (snd valueFromAssignment)
+                            if basicInfo.OrCurrentValue = (OrCurrent true) 
+                            then yield enum, (fuzzyOR assignmentImplication (snd currentValue)) 
+                            else yield enum, assignmentImplication
+                        | Some valueFromAssignment, None -> 
+                            let assignmentImplication = fuzzyAND firingLevel (snd valueFromAssignment)
+                            yield enum, assignmentImplication
+                        | None, Some currentValue -> 
+                            yield currentValue
+                        | None, None -> yield enum, 0.
+                ] 
+                |> noneIfEmpty 
+        | true, None -> 
+            qualifierDict.Item q <- 
+                [ for valueFromAssignment in vl do yield fst(valueFromAssignment), ( fuzzyAND firingLevel (snd valueFromAssignment) ) ]
+                |> noneIfEmpty
+        | _ -> failwith (sprintf "No such qualifier declared: %A" q)
