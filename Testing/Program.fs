@@ -867,3 +867,17 @@ let evalOperation operation firingLevel =
         if isString var then
             stringVariableDict.Item var <- evalStringExpression "" str |> Some
         else failwith (sprintf "No such string variable declared: %A" var)
+    | AssignNumeric(var, expr) -> 
+        if isNumeric var then
+            match eval expr, ResizeArray.tryFind (function (v:Variable) -> v.unwrapName = var) variables with
+            | nan, _ when nan = System.Double.NaN -> 
+                printfn "Expression %A is incorrect at some point. Check if the output is within domain range" expr
+                recPrompt var
+            | correctNumber, Some vRA -> 
+                let range = vRA.getRange
+                numericVariableDict.Item var <- 
+                    if correctNumber > snd(range) then snd(range) |> Some
+                    elif correctNumber < fst(range) then fst(range) |> Some
+                    else correctNumber |> Some
+            | _ -> failwith (sprintf "Cannot find variable %A in memory" var)
+        else failwith (sprintf "No such numeric variable declared: %A" var)
