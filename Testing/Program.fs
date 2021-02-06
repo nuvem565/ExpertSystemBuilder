@@ -505,6 +505,9 @@ let pCompleteExpression = expr .>> ws
 
 // END OF ARITHMETIC EXPRESSION PARSER
 
+
+// BOOLEAN EXPRESSIONS PARSER
+
 let pBool = new OperatorPrecedenceParser<BoolExpr,unit,unit>()
 
 let boolTerm = pBool.ExpressionParser
