@@ -1068,3 +1068,27 @@ lookUpNumeric <-
             | _ -> failwith (sprintf "No such numeric variable defined: %s" key)
         | _ -> failwith (sprintf "No such numeric variable defined: %s" key)
             
+lookUpString <- 
+    fun key -> 
+        match stringVariableDict.TryGetValue(key) with
+        | true, Some value ->
+            value
+        | true, _ ->
+            let usedRules = unverifiedRulesWithAssignment key 
+            executeRules key usedRules |> ignore
+            match stringVariableDict.TryGetValue key with
+            | true, Some value -> 
+                printfn "String variable %s, value: %s, infered from rules:" key value
+                for r in usedRules do
+                    if r.Name.IsSome
+                    then printfn "Rule: %s, nr: %i" r.Name.Value r.Number
+                    else printfn "Rule nr: %i" r.Number 
+                value
+            | true, _ ->
+                printfn "\r\nNo rule for string variable '%s' in the collection of unverified rules" key
+                recPrompt key
+                stringVariableDict.[key].Value
+            | _ -> failwith (sprintf "No such string variable defined: %s" key)
+        | _ -> failwith (sprintf "No such string variable defined: %s" key)
+
+// END OF LOOKUPS
