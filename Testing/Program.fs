@@ -917,3 +917,14 @@ let evalOperation operation firingLevel =
             printfn "\r\nThe chosen choice is: %s" choice |> ignore
         | true, None -> choiceDict.Item choice <- Some(fuzzyAND firingLevel valueFromAssignment) // currentConf = ifFiringLevel * explicitValue
         | _ -> failwith (sprintf "%A - no such choice declared" choice)
+    | Clear(terminals) -> 
+        for terminal in terminals do
+            match terminal with
+            | Terminal.QualifierName name -> 
+                match ResizeArray.tryFind (function (q:Qualifier) -> q.unwrapName = name) qualifiers with
+                | Some q -> qualifierDict.Item (q.unwrapQuestion) <- None
+                | None -> failwith (sprintf "There is no qualifier with name: %A" name)
+            | NumericVar num ->  if numericVariableDict.ContainsKey num then numericVariableDict.Item num <- None
+            | StringVar str -> if stringVariableDict.ContainsKey str then stringVariableDict.Item str <- None
+            | ChoiceVar c -> if choiceDict.ContainsKey c then choiceDict.Item c <- None
+            | _ -> failwith "incorrect state. Should be Q, N, S or C"
