@@ -971,3 +971,10 @@ let evalOperation operation firingLevel =
                     qualifierDict.Item q.unwrapQuestion <- newValues |> noneIfEmpty
                 | None -> failwith (sprintf "There is no qualifier with name: %A" name)
         | _ -> failwith "Incorrect state. Expected name of qualifier or numeric variable. In both cases in square brackets."
+    | Delay(QualifierName q1, QualifierName q2) -> 
+        match ResizeArray.tryFind (function (q:Qualifier) -> q.unwrapName = q1) qualifiers,ResizeArray.tryFind (function (q:Qualifier) -> q.unwrapName = q2) qualifiers with
+        | Some q1, Some q2 -> 
+            qualifierDict.Item q2.unwrapQuestion <- qualifierDict.Item q1.unwrapQuestion
+        | _, Some q2 -> failwith  "Incorrect state. Qualifier to be delayed doesn't exists" 
+        | Some q1, _ -> failwith  "Incorrect state. Qualifier of pervious value doesn't exists" 
+        | _ , _ -> failwith  "Incorrect state. Qualifier of pervious value doesn't exists" 
