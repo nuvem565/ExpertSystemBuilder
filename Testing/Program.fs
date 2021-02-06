@@ -951,3 +951,23 @@ let evalOperation operation firingLevel =
                         for i = 0 to enums.Length - 1 do
                             CSVset newPath (eval row) (eval column + (float i)) 0.
                 | None -> failwith (sprintf "There is no qualifier with name: %A" name)
+    | Read(path, row, column, toRead) ->
+        let newPath =
+            match path with
+                | StringConst pathStr -> pathStr
+                | StringVar var -> (stringVariableDict.Item var).Value
+                | _ -> failwith (sprintf "Incorrect state. The path for saving is not recognized as string variable nor string literal")
+        match toRead with
+        | Terminal.NumericVar num ->
+            numericVariableDict.Item num <- Some( CSVget newPath (eval row) (eval column) ) 
+        | QualifierName name -> 
+            match ResizeArray.tryFind (function (q:Qualifier) -> q.unwrapName = name) qualifiers with
+                | Some q -> 
+                    let enums = q.unwrapEnums
+                    let newValues = [
+                        for i = 0 to enums.Length - 1 do
+                            yield enums.[i], CSVget newPath (eval row) (eval column + (float i))
+                    ]
+                    qualifierDict.Item q.unwrapQuestion <- newValues |> noneIfEmpty
+                | None -> failwith (sprintf "There is no qualifier with name: %A" name)
+        | _ -> failwith "Incorrect state. Expected name of qualifier or numeric variable. In both cases in square brackets."
