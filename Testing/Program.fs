@@ -1004,3 +1004,17 @@ let interpretRule (r:Rule) =
                
 let executeSelectedRules (rl: Rule list) = List.iter (interpretRule) rl; rl
 
+// "rules" argument from rulesWithQualifierAssignment function
+let executeRules (key:string) (rl:Rule list) = 
+    if rl.IsEmpty then 
+        // no rule with assignment to that qualifier or rule has been checked but qualifier was set to "None" somehow
+        errorMsg.AppendFormat ("No rule for this variable - '{0}' \nin the collection of unverified rules\r\n", key) |> ignore 
+        errorMsg.AppendLine ("List of rules with assignment to that qualifier and executed (verified): ") |> ignore 
+        truOrFalseRulesWithAssignment key
+        |> List.map (fun r -> ruleFormat r)
+        |> errorMsg.Append |> ignore // prints list of verified rules with eligible assignment to the error messages
+        []
+    else 
+        executeSelectedRules rl
+
+// END OF EXECUTING RULES
