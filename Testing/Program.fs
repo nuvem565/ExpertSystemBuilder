@@ -980,3 +980,7 @@ let evalOperation operation firingLevel =
         | _ , _ -> failwith  "Incorrect state. Qualifier of pervious value doesn't exists" 
     | Report rep -> commandLog.AppendFormat ("\r\nReport: {0}", rep) |> ignore
         
+
+let evalThen r firingLevel = 
+    for operation in r.ThenStatements do
+        evalOperation operation firingLevel
