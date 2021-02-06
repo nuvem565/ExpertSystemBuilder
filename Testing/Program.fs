@@ -907,3 +907,13 @@ let evalOperation operation firingLevel =
                 [ for valueFromAssignment in vl do yield fst(valueFromAssignment), ( fuzzyAND firingLevel (snd valueFromAssignment) ) ]
                 |> noneIfEmpty
         | _ -> failwith (sprintf "No such qualifier declared: %A" q)
+    | AssignChoice(choice, valueFromAssignment) -> 
+        match choiceDict.TryGetValue choice with
+        | true, Some currentConf -> 
+            let assignmentImplication = fuzzyAND firingLevel valueFromAssignment
+            if basicInfo.OrCurrentValue = (OrCurrent true) 
+            then choiceDict.Item choice <- Some(fuzzyOR currentConf assignmentImplication) //currentConf = currentConf + (ifFiringLevel * explicitValue)
+            else choiceDict.Item choice <- Some assignmentImplication
+            printfn "\r\nThe chosen choice is: %s" choice |> ignore
+        | true, None -> choiceDict.Item choice <- Some(fuzzyAND firingLevel valueFromAssignment) // currentConf = ifFiringLevel * explicitValue
+        | _ -> failwith (sprintf "%A - no such choice declared" choice)
