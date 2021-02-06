@@ -861,3 +861,5 @@ let rec evalStringExpression (acc:string) = function //implicit one argument
             failwith "No such string declared"
     | _ -> failwith "Illegal state"
 
+let evalOperation operation firingLevel = 
+    match operation with
