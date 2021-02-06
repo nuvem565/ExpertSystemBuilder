@@ -841,3 +841,5 @@ let rulesWithAssignment key (stateOfRules: RuleValue -> bool) =
             | _ -> false ))
     |> ResizeArray.toList
 
+let unverifiedRulesWithAssignment name = rulesWithAssignment name (function RuleValue.Unverified -> true | _ -> false)
+
