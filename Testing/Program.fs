@@ -843,3 +843,6 @@ let rulesWithAssignment key (stateOfRules: RuleValue -> bool) =
 
 let unverifiedRulesWithAssignment name = rulesWithAssignment name (function RuleValue.Unverified -> true | _ -> false)
 
+let truOrFalseRulesWithAssignment name = rulesWithAssignment name (function RuleValue.True _ | RuleValue.False -> true | _ -> false)
+
+// END OF FILTERING FUNCTION
