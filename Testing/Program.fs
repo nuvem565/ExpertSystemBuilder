@@ -569,6 +569,9 @@ let boolExpression = boolTerm .>> ws
 
 // END OF BOOLEAN EXPRESSION PARSER    
 
+
+// RULE PARSER DEFINITION
+
 let pRule =
     let assinging = strCI_ws "is" >>. strCI_ws "given" >>. strCI_ws "the" >>. strCI_ws "value"
     let pRuleName = opt (key "rule" ":" >>. pAnyString .>> ws)
