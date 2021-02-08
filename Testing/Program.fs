@@ -1178,3 +1178,40 @@ let rec sumOfFuzzyValues valuesWithSetTruthness (vals:string list) = // It could
             | _ -> 0.
             |> fuzzyOR (sumOfFuzzyValues valuesWithSetTruthness rest)
 
+lookUpQualifier <-
+    fun key vl ->
+        match qualifierDict.TryGetValue key with
+        | true, _ when ResizeArray.exists (fun q -> q.Fuzzify.IsSome && q.unwrapQuestion = key) qualifiers ->
+            match ResizeArray.tryFind (function (q:Qualifier) -> q.unwrapQuestion = key) qualifiers with
+            | Some q -> 
+                let valuesToSet = fuzzifyVar (q.Enumerations) (lookUpNumeric <| q.Fuzzify.Value)
+                qualifierDict.Item key <- Some(valuesToSet) 
+                sumOfFuzzyValues valuesToSet vl
+            | None -> failwith (sprintf "No such qualifier defined: %A." key)
+        | true, Some valuesWithTruthness -> //if it's infered by now so it only checks its value(s)
+            sumOfFuzzyValues valuesWithTruthness vl
+        | true, None ->
+            //for now inferring only by rules not programs nor data base
+            //now we don't want to check all the rules with that qualifier assignment in "then" operations - if any rule satisfy conditons new value goes (?)
+            //-> consistency check
+            let usedRules = unverifiedRulesWithAssignment key // filter rules with assignment to this qualifier in "then"
+            executeRules key usedRules |> ignore //repeatedly execute the rules
+            match qualifierDict.TryGetValue key with
+            | true, Some options -> 
+                printfn "Qualifier variable %s, value: %A, infered from rules:" key options
+                for r in usedRules do
+                    if r.Name.IsSome
+                    then printfn "Rule: %s, nr: %i" r.Name.Value r.Number
+                    else printfn "Rule nr: %i" r.Number 
+                sumOfFuzzyValues options vl
+            | true, None -> 
+                printfn "\r\nNo rule for qualifier '%A' in the collection of unverified rules" key
+                promptQualifier key
+                match qualifierDict.TryGetValue key with
+                | true, Some options -> 
+                    sumOfFuzzyValues options vl
+                | _ -> failwith "Still no qualifier variable defined"
+            | _ -> failwith "No such qualifier variable defined"
+        | _ -> failwith "No such qualifier variable defined"
+
+// END OF QUALIFIER LOOKUP
