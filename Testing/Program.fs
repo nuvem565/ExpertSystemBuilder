@@ -1039,6 +1039,7 @@ let executeRules (key:string) (rl:Rule list) =
 
 
 // LOOKUP functions - finished getter which runs suitable rules or questions the user for values 
+
 let lookUpChoice name = 
     match choiceDict.TryGetValue name with 
     | true, Some value -> value
@@ -1160,3 +1161,20 @@ eval <-
         | _ -> errorMsg.AppendFormat ("Incorrect expression\r\n") |> ignore; nan
 
 // END OF ARITHMETIC EXPRESSION INTERPRETER
+
+
+// QUALIFIER LOOKUP
+// Calculate fuzzy sum of qualifier values truthness in order to set truthness in logic (if part) expression
+let rec sumOfFuzzyValues valuesWithSetTruthness (vals:string list) = // It could be done better - without Some _ option in lookUpQualifier
+    // find each value saved in qualifierDict (under correct key, ofc) and sum its membership level in fuzzy way
+    match vals with
+    | [] -> 0. // fuzzy sum of sth and zero outputs sth
+    | qualifierValue :: rest -> 
+        match valuesWithSetTruthness with
+        | [] -> 0.
+        | list -> 
+            match List.tryFind (function valXmemFunc -> fst(valXmemFunc) = qualifierValue) list with
+            | Some valXmemFunc -> snd valXmemFunc
+            | _ -> 0.
+            |> fuzzyOR (sumOfFuzzyValues valuesWithSetTruthness rest)
+
