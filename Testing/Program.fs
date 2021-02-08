@@ -1215,3 +1215,7 @@ lookUpQualifier <-
         | _ -> failwith "No such qualifier variable defined"
 
 // END OF QUALIFIER LOOKUP
+
+
+// LOGIC EXPRESSION INTERPRETER
+
