@@ -1219,3 +1219,11 @@ lookUpQualifier <-
 
 // LOGIC EXPRESSION INTERPRETER
 
+let exprToBool (leaf:BoolExpr) = 
+    match leaf with
+    | BoolLeaf l -> 
+        match l with
+        | Expression e -> eval e 
+        | _ -> failwith "Unable to solve this boolean expression leaf"
+    | _ -> failwith "Boolean expression input expected"
+    
