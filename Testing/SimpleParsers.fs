@@ -53,3 +53,6 @@ let openSquare s = skipString "[" s
 let closeSquare s = skipString "]" s
 let betweenSquare s = between openSquare closeSquare s .>> ws
 
+let quoteMark s = skipString "\"" s
+let betweenQuotations s = between quoteMark quoteMark s .>> ws
+
