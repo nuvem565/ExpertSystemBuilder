@@ -13,3 +13,9 @@ let test p str =
     | Success(result, _, _)   -> printfn "Success: %A" result
     | Failure(errorMessage, _, _) -> printfn "Failure: %s" errorMessage
        
+let operationFormat (op:Operations list) = 
+    let sb = new StringBuilder()
+    for operation in op do
+        sb.Append("\r\n\t\t").Append(operation) |> ignore
+    sb.ToString()
+
