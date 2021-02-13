@@ -1233,3 +1233,27 @@ let evalString input =
     | StringVar str -> lookUpString str
     | _ -> failwith (sprintf "Illegal state of: %A" input)
 
+evalBool <- fun (x : BoolExpr) ->
+    match x with
+    | LogicalConst b -> if b then 1. else 0.
+    | Not b -> 1. - (evalBool b)
+    | Logical("AND", a, b) -> fuzzyAND (evalBool a) (evalBool b)
+    | Logical("OR", a, b) -> fuzzyOR (evalBool a) (evalBool b)
+    | StringComparison(s1, s2) -> if evalString s1 = evalString s2 then 1. else 0.
+    | QualifierComparison(q, vl) -> lookUpQualifier q vl    
+    | Comparison("=", a, b) -> if exprToBool a =~ exprToBool b then 1. else 0.
+    | Comparison(">=", a, b) -> 
+        let a = exprToBool a
+        let b = exprToBool b
+        if a > b || a =~ b then 1. else 0.
+    | Comparison("<=", a, b) -> 
+        let a = exprToBool a
+        let b = exprToBool b
+        if a < b || a =~ b then 1. else 0.
+    | Comparison(">", a, b) -> if exprToBool a > exprToBool b then 1. else 0.
+    | Comparison("<", a, b) -> if exprToBool a < exprToBool b then 1. else 0.
+    | Comparison(_, a, b) -> failwith "Incorrect state. Comparsion operator must be: = (==), <, >, <=, >="
+    | ChoiceComparison(_) -> failwith "Incorrect state. Comparison of choice(es) must be in form: choice X (comparison symbol: <, >, <=, >=, =) (expression - variable, choice or constant) "
+
+// END OF LOGIC EXPRESSION INTERPRETER
+
