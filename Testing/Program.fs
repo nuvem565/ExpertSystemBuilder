@@ -1315,3 +1315,24 @@ let outputPrinters () =
 
 
 // END OF OUTPUT PRINTERS
+ 
+// PROGRAM EXECUTION FUNCTIONS
+
+let rec ruleNumber () = 
+    let ruleNumbers = ws >>. sepEndBy1 (pint32 .>> ws) (optional(ws_str ","))
+    let userInput = prompt ("Choose numbers (int) of rules to check, separated by comma ',':")
+    match ruleNumbers (new CharStream<String>(userInput, 0, userInput.Length)) with
+    | rl when rl.Status = Ok && List.forall (fun num -> num > 0) rl.Result -> 
+        let rec filterRules acc = function 
+            | [] -> acc
+            | r :: rest -> 
+                match ResizeArray.tryFind (fun (rule:Rule) -> rule.Number = r) rules with
+                | Some rule -> filterRules (rule :: acc) rest
+                | None -> 
+                    printfn "Rule with index %i has not been declared" r
+                    filterRules acc rest
+        filterRules [] rl.Result
+    | _ ->
+        printfn "Probably one or more of the rules index is not within range or the input is empty"
+        ruleNumber ()
+
