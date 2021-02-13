@@ -42,3 +42,24 @@ let ruleFormat (r:Rule) =
 let variableFormat (v:Variable) =
     sprintf ""
  
+// Auxiliary function for saving sequence of Section type to the file
+let printAll (file:StreamWriter) sections = 
+    for elem in sections do
+        match elem with 
+        | Basic x -> 
+            file.WriteLine("BASIC INFO:")
+            file.WriteLine(sprintf "%A" x)
+        | Qualifiers x -> 
+            file.WriteLine("QUALIFIERS:")
+            ResizeArray.iter (fun a -> a |> sprintf "%A" |> file.WriteLine) x
+        | Choices x -> 
+            file.WriteLine("CHOICES:")
+            ResizeArray.iter (fun a -> a |> sprintf "%A" |> file.WriteLine) x
+        | Variables x -> 
+            file.WriteLine("VARIABLES:")
+            ResizeArray.iter (fun a -> a |> sprintf "%A" |> file.WriteLine) x
+        | Rules x -> 
+            file.WriteLine("RULES:")
+            ResizeArray.iter (fun a -> a |> ruleFormat |> file.Write) x
+
+
