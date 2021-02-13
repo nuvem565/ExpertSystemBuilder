@@ -37,3 +37,10 @@ let removeComments s =
 
     searchForComments [] (Seq.toList s)
     
+// Apply test to the result of parsing by p  or fail non-fatally
+/// <summary>Uses parser p and tests the result. Error message (from FParsec) is preceded by parsed value.</summary>
+///<param name="test">Function that returns bool</param>
+///<returns>The same parser as p</returns>
+let pIfTested test error p = 
+    p >>= fun s ->  if test s then preturn s else (fail (sprintf "%A - %s" s error))
+
