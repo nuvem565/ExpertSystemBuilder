@@ -49,3 +49,7 @@ let openCurly s = skipString "{" s
 let closeCurly s = skipString "}" s
 let betweenCurly s = between openCurly closeCurly s .>> ws
 
+let openSquare s = skipString "[" s
+let closeSquare s = skipString "]" s
+let betweenSquare s = between openSquare closeSquare s .>> ws
+
