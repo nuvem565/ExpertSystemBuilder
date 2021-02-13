@@ -44,3 +44,8 @@ let removeComments s =
 let pIfTested test error p = 
     p >>= fun s ->  if test s then preturn s else (fail (sprintf "%A - %s" s error))
 
+// for purpose of "between" parser
+let openCurly s = skipString "{" s
+let closeCurly s = skipString "}" s
+let betweenCurly s = between openCurly closeCurly s .>> ws
+
