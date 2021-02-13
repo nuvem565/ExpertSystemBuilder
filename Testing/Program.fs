@@ -1268,3 +1268,17 @@ inputString
 
 // END OF PARSE A FILE
 
+
+// INTERMEDIATE PROGRAM CHECK
+
+match basicInfo.LoopOverVariable with
+| LoopOver(Some var) when isNumeric var -> 
+    match ResizeArray.tryFind (function (varRA:Variable) -> varRA.unwrapName = var) variables with
+    | Some variableRA -> 
+        match variableRA.UpperLimit, variableRA.LowerLimit with 
+        | Upper(Some _) , _ -> ()
+        | _ -> failwith "Variable to iterate over has to have lower and upper limit"
+| LoopOver(None) -> ()
+
+//END OF INTERMEDIATE PROGRAM CHECK
+
