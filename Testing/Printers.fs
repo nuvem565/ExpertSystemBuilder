@@ -63,3 +63,26 @@ let printAll (file:StreamWriter) sections =
             ResizeArray.iter (fun a -> a |> ruleFormat |> file.Write) x
 
 
+// Output to the file
+let writeResult (p:Parser<Section[],unit>) str =
+    match run p str with 
+    | Success(result,_,_) -> 
+        printfn "Please, enter the parsed objects file name:"
+        let fileName = System.Console.ReadLine()
+        // Default "Demo_parsed.txt path, for no user input
+        let mutable filePath:string = __SOURCE_DIRECTORY__ + "\\Demo_parsed.txt"
+        // In case of user input
+        if fileName <> "" then
+            filePath <- __SOURCE_DIRECTORY__ + "\\" + fileName + ".txt"
+            
+        let file = new System.IO.StreamWriter(filePath)
+
+        // Passing StreamWriter object to save the results in apropriate format
+        printAll file result
+        // Closing in order to print it out to the cmd
+        file.Close()        
+        printfn "Success: \n" 
+        printfn "%s" (File.ReadAllText(filePath))
+        printfn "File creation succeded. Output directory: %s" filePath
+    | Failure(errorMessage,_,_) -> printfn "Failure: %s" errorMessage
+         
