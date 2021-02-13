@@ -1345,3 +1345,18 @@ let executeProgram () =
         else executeSelectedRules (ruleNumber()) |> ignore
         outputPrinters ()
 
+    match basicInfo.LoopOverVariable with
+    | LoopOver(Some var) -> 
+        match numericVariableDict.TryGetValue var with
+        | true, Some(iterations) -> 
+            for i = 1 to int(iterations) do 
+                numericVariableDict.Item var <- (float i) |> Some
+                printfn ""
+                printfn "************* ITERATION %A *************" i
+                printfn "Iterated variable = %A" i
+                printfn ""
+                program ()
+                printfn ""
+        | _ -> program ()
+    | _ -> program ()
+    
