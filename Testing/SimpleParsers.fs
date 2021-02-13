@@ -15,3 +15,7 @@ let strCI_ws s = skipStringCI s >>. ws
 let ws_str s = skipStringCI s .>> ws
 let ws_strCI s = skipStringCI s .>> ws
 
+// for parsing comment starting with /* ending with */ or newline
+let comment s = str "//*" >>. skipManyTill ((skipChar '*' >>? skipChar '/') <|> skipNewline) s
+
+
