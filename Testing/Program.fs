@@ -1227,3 +1227,9 @@ let exprToBool (leaf:BoolExpr) =
         | _ -> failwith "Unable to solve this boolean expression leaf"
     | _ -> failwith "Boolean expression input expected"
     
+let evalString input = 
+    match input with
+    | StringConst s -> s
+    | StringVar str -> lookUpString str
+    | _ -> failwith (sprintf "Illegal state of: %A" input)
+
