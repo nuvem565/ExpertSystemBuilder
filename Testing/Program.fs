@@ -1282,3 +1282,36 @@ match basicInfo.LoopOverVariable with
 
 //END OF INTERMEDIATE PROGRAM CHECK
 
+
+// OUTPUT PRINTERS (DEBUG)
+let outputPrinters () =
+    printfn ""
+    printfn " --------- QUALIFIERS --------"
+    for item in qualifierDict do
+        if item.Value <> None then
+            printfn "%s - %A" item.Key item.Value
+        else
+            printfn "%s - %s" item.Key "NONE"
+    printfn ""
+    printfn " ----------- STRINGS ---------"
+    for item in stringVariableDict do
+        if item.Value <> None then
+            printfn "%A" item
+        else
+            printfn "%A - %s" item.Key "NONE"
+    printfn ""
+    printfn " ---------- NUMERICS ---------"
+    for item in numericVariableDict do
+        if item.Value <> None then
+            printfn "%A" item
+        else
+            printfn "%A - %s" item.Key "NONE"
+    printfn ""
+    printfn " ---------- CHOICES ----------"
+    for item in choices do
+        if item.State <> None then
+            printfn "Choice nr: %i - %s. State: %A" item.Number item.Name item.State
+    printfn ""
+
+
+// END OF OUTPUT PRINTERS
