@@ -1257,3 +1257,14 @@ evalBool <- fun (x : BoolExpr) ->
 
 // END OF LOGIC EXPRESSION INTERPRETER
 
+
+// PARSE A FILE
+
+printfn ""
+// With input text file
+inputString
+// alternatively with "writeResult" instead of "test"
+|> writeResult parse
+
+// END OF PARSE A FILE
+
