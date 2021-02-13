@@ -1367,3 +1367,19 @@ executeProgram ()
 
 // END OF PROGRAM EXECUTION FUNCTIONS
 
+
+// Print all error messages
+System.Console.Write errorMsg |> ignore
+System.Console.Write commandLog |> ignore
+
+
+
+
+// Prevents instant execution
+
+printfn "Press any key to terminate"
+System.Console.ReadKey()
+|> ignore
+
+
+
