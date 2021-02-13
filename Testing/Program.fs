@@ -1336,3 +1336,12 @@ let rec ruleNumber () =
         printfn "Probably one or more of the rules index is not within range or the input is empty"
         ruleNumber ()
 
+
+let executeProgram () =
+    let program () = 
+        if basicInfo.Derivation = BasicAttribute.Derivation (Derivation.AllRulesUsed) then 
+            ResizeArray.toList rules
+            |> executeSelectedRules |> ignore
+        else executeSelectedRules (ruleNumber()) |> ignore
+        outputPrinters ()
+
