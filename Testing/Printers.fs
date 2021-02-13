@@ -39,3 +39,6 @@ let ruleFormat (r:Rule) =
 //let ruleFormat (r:Rule) = 
 //    sprintf "\r\n{\r\n\tRule: %d - Name: %A\r\n\tIF: %A\r\n\tTHEN: %A\r\n\tELSE: %A\r\n}\r\n" r.Number r.Name r.IfClauses (r.ThenStatements |> operationFormat) r.ElseStatements
 
+let variableFormat (v:Variable) =
+    sprintf ""
+ 
