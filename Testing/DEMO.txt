@@ -11,3 +11,6 @@ PROBABILITY SYSTEM: fuzzy
 
 DISPLAY THRESHOLD: 1
 
+/* Próg aktywacji reguły. Domyślnie 0.1.
+FUZZY THRESHOLD: 0.0
+
