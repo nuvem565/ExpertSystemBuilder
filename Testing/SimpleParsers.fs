@@ -70,3 +70,11 @@ let pSentence s =
     ( manySatisfy (fun ch -> isLetter ch || isDigit ch || (isAnyOf symbols ch)) 
     <??> sprintf "Expected any of letter, digit or any of %s" symbols .>> ws )
 
+// no parentheses ()
+let pSentence2 s = 
+    let symbols = "_ ?!.,-=+-*%$/~<>:;\'\\[]ąęćłńóśżź"
+    s |> 
+    ( manySatisfy (fun ch -> isLetter ch || isDigit ch || (isAnyOf symbols ch)) 
+    <??> sprintf "Expected any of letter, digit or any of %s" symbols .>> ws )
+
+
