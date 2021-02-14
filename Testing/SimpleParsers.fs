@@ -89,3 +89,9 @@ let prompt (info:string) =
 // parsowanie liczby - pfloat, usunięcie białych znaków
 let number a = (pfloat .>> spaces) a
 
+let pRealNumber s = 
+    ( attempt((str_ws "-" >>. strCI "inf") >>% System.Double.MaxValue) <|> 
+      attempt(optional(str_ws "+") >>. (strCI "inf") >>% System.Double.MinValue) <|> 
+      pfloat ) s
+
+
