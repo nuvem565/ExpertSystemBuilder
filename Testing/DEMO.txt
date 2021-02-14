@@ -2,3 +2,6 @@
 Subject:
 Przykład dla procesu regulacji temperatury pieca przy użyciu regulatora ze wzmocnieniem (człon P)
 
+Author:
+TJ
+
