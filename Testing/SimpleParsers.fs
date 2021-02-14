@@ -59,3 +59,5 @@ let betweenQuotations s = between quoteMark quoteMark s .>> ws
 // parses keywords with separator after and optional spaces between them
 let key str separator = skipStringCI str >>. ws >>. skipStringCI separator >>. ws
 
+// pAnystring parses any ASCII letter or digit combination
+let letterOrDigit ch = isAsciiLetter ch || isDigit ch || ch = '_'
