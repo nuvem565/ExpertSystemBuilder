@@ -95,3 +95,8 @@ let pRealNumber s =
       pfloat ) s
 
 
+// Argument w formie jawnej (a) zapewnia generyczność kodu (automatyczne uogólnianie)
+let parentheses a = between (str_ws "(") (str_ws ")") a
+
+
+
