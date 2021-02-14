@@ -28,3 +28,15 @@ OR CURRENT: Y
 
 QUALIFIERS:
 
+/* Qualifier 1
+Q> Uchyb regulacji
+
+V> MAŁO {(-1500,1), (0,0), (1500,0)}
+V> UMIARKOWANIE {(-1500,0), (0,1), (1500,0)}
+V> DUŻO {(-1500,0), (0,0), (1500,1)}
+
+Name: UCHYB_REGULACJI 
+Fuzzify: e 
+
+
+
