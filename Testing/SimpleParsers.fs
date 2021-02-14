@@ -84,3 +84,8 @@ let prompt (info:string) =
     System.Console.ReadLine()
 
 
+
+// OPERATOR PRECEDENCE PARSER - MATH EXPRESSIONS
+// parsowanie liczby - pfloat, usunięcie białych znaków
+let number a = (pfloat .>> spaces) a
+
