@@ -40,3 +40,15 @@ Fuzzify: e
 
 
 
+/* Qualifier 3
+Q> Wyjście regulatora
+
+V> MAŁO {(-800,1), (0,0), (800,0)}
+V> UMIARKOWANIE {(-800,0), (0,1), (800,0)}
+V> DUŻO {(-800,0), (0,0), (800,1)}
+
+Defuzzify: MOC
+Name: OUTPUT
+
+
+
