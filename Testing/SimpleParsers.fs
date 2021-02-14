@@ -62,3 +62,11 @@ let key str separator = skipStringCI str >>. ws >>. skipStringCI separator >>. w
 // pAnystring parses any ASCII letter or digit combination
 let letterOrDigit ch = isAsciiLetter ch || isDigit ch || ch = '_'
 let pAnyString s = s |> (manyChars (letter <|> digit <|> (pchar '_')) <??> "Expect only ASCII letters, digits or '_'" .>> ws)
+
+// parses any letter, space or typical character for statement
+let pSentence s = 
+    let symbols = "_ ?!.,-=+-*%$/~<>:;\'\\()[]ąęćłńóśżź"
+    s |> 
+    ( manySatisfy (fun ch -> isLetter ch || isDigit ch || (isAnyOf symbols ch)) 
+    <??> sprintf "Expected any of letter, digit or any of %s" symbols .>> ws )
+
