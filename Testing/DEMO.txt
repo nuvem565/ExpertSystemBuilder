@@ -21,3 +21,8 @@ LOOP: ITERACJA
 /* symbol oddzielający komórki w odczytywanych i zapisywanych plikach .csv
 CSV: ; 
 
+/* N lub No, oznacza, że nowo przypisywna wartość o zmiennej wyliczeniowej nie jest sumowana
+/* w sposób rozmyty z aktualnie zapisaną już wartością.
+OR CURRENT: Y 
+
+
