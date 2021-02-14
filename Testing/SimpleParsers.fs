@@ -78,3 +78,9 @@ let pSentence2 s =
     <??> sprintf "Expected any of letter, digit or any of %s" symbols .>> ws )
 
 
+// query for input to parse
+let prompt (info:string) = 
+    System.Console.WriteLine(info) |> ignore
+    System.Console.ReadLine()
+
+
