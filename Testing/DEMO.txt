@@ -5,3 +5,5 @@ Przykład dla procesu regulacji temperatury pieca przy użyciu regulatora ze wzm
 Author:
 TJ
 
+DERIVATION: ALL RULES USED
+
