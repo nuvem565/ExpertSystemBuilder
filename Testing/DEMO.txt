@@ -64,3 +64,9 @@ Type = N
 Upper = 800
 Lower = -800
 
+[ITERACJA] Iteracja wykonania programu
+Type = N
+Initialize = 1000
+Upper = 3000
+Lower = 0
+
