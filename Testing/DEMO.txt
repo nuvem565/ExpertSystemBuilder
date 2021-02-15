@@ -93,3 +93,7 @@ Initialize = 2
 Type = N
 Initialize = 945
 
+[T2] Parametr obiektu T2
+Type = N
+Initialize = 450
+
