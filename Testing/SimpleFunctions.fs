@@ -15,3 +15,7 @@ let Y = snd
 // curried version of str.Trim()
 let trim (str:string) = str.Trim()
 
+let noneIfEmpty = function
+    | [] -> None
+    | vl -> Some vl
+
