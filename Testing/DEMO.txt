@@ -74,3 +74,7 @@ Lower = 0
 Type = N
 Initialize = 0
 
+[WARTOSC_ZADANA] Wartość zadana dla funkcji skoku jednostkowego
+Type = N
+Initialize = 1500
+
