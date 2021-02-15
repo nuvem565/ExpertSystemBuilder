@@ -27,3 +27,9 @@ let rec recursiveFix f x = f (recursiveFix f) x
 
 let toNearest (n:float) = Math.Round n
 
+let rec factorial = 
+    function
+    | n when toNearest n = 0. -> 1.
+    | n when toNearest n >= 1. -> n * factorial(n - 1.)
+    | n when toNearest n < 0. -> nan
+
