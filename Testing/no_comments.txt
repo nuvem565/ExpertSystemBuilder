@@ -1,0 +1,193 @@
+
+Subject:
+Przykład dla procesu regulacji temperatury pieca przy użyciu regulatora ze wzmocnieniem (człon P)
+
+Author:
+TJ
+
+DERIVATION: ALL RULES USED
+
+PROBABILITY SYSTEM: fuzzy
+
+DISPLAY THRESHOLD: 1
+
+
+
+FUZZY THRESHOLD: 0.0
+
+
+
+
+
+LOOP: ITERACJA
+
+
+
+CSV: ; 
+
+
+
+
+
+OR CURRENT: Y 
+
+
+QUALIFIERS:
+
+
+
+Q> Uchyb regulacji
+
+V> MAŁO {(-1500,1), (0,0), (1500,0)}
+V> UMIARKOWANIE {(-1500,0), (0,1), (1500,0)}
+V> DUŻO {(-1500,0), (0,0), (1500,1)}
+
+Name: UCHYB_REGULACJI 
+Fuzzify: e 
+
+
+
+
+
+Q> Wyjście regulatora
+
+V> MAŁO {(-800,1), (0,0), (800,0)}
+V> UMIARKOWANIE {(-800,0), (0,1), (800,0)}
+V> DUŻO {(-800,0), (0,0), (800,1)}
+
+Defuzzify: MOC
+Name: OUTPUT
+
+
+
+CHOICES:
+
+
+
+
+
+VARIABLES:
+
+[MOC]  Moc napędu chłodzenia/grzania 
+Type = N
+Upper = 800
+Lower = -800
+
+[ITERACJA] Iteracja wykonania programu
+Type = N
+Initialize = 1000
+Upper = 3000
+Lower = 0
+
+[AKTUALNA] Aktualna temperatura pieca. Obliczona na podstawie odpowiedzi skokowej.
+Type = N
+Initialize = 0
+
+[WARTOSC_ZADANA] Wartość zadana dla funkcji skoku jednostkowego
+Type = N
+Initialize = 1500
+
+
+
+
+[e] Uchyb regulacji 
+Type = N 
+
+[KP] Wzmocnienie regulacji
+Type = N
+Initialize = 2
+
+
+
+
+[T1] Parametr obiektu T1
+Type = N
+Initialize = 945
+
+[T2] Parametr obiektu T2
+Type = N
+Initialize = 450
+
+[K] Wzmocnienie obiektu regulacji
+Type = N
+Initialize = 15
+
+
+
+RULES:
+
+
+
+IF:
+       TRUE
+
+THEN:
+       [e] IS GIVEN THE VALUE ([WARTOSC_ZADANA] - [AKTUALNA])
+
+
+
+
+RULE: 1
+
+IF:
+       Uchyb regulacji {MAŁO} 
+
+THEN:
+       Wyjście regulatora {MAŁO} - confidence = 0.6, {UMIARKOWANIE} - confidence = -0.1, {DUŻO} - confidence = -0.3
+
+
+
+
+
+RULE: 2
+
+IF:
+       Uchyb regulacji {UMIARKOWANIE} 
+
+THEN:
+       Wyjście regulatora {UMIARKOWANIE} - confidence = 0.65 {MAŁO} - confidence = -0.3 {DUŻO} - confidence = -0.3
+                                 
+
+
+
+
+RULE: 3
+
+IF:
+       Uchyb regulacji {DUŻO}
+
+THEN:
+       Wyjście regulatora {DUŻO} - confidence = 0.6 {UMIARKOWANIE} - confidence = -0.1 {MAŁO} - confidence = -0.3
+
+
+
+
+
+IF:
+       TRUE
+
+THEN:
+       X> DEFUZZIFY
+and:   [AKTUALNA] IS GIVEN THE VALUE [K]*( 1 - [T1]/([T1] - [T2])*exp(-([ITERACJA])/[T1]) + [T2]/([T1]-[T2])*exp(-([ITERACJA])/[T2]) ) * [MOC] 
+
+
+
+
+
+
+
+RULE: 5
+
+IF:
+       TRUE
+
+THEN: 
+       X> SAVE("C:\Users\Tomasz\source\repos\Testing\Testing\example.csv", [ITERACJA], 1, [ITERACJA])
+and:   X> SAVE("C:\Users\Tomasz\source\repos\Testing\Testing\example.csv", [ITERACJA], 2, [e])
+and:   X> SAVE("C:\Users\Tomasz\source\repos\Testing\Testing\example.csv", [ITERACJA], 3, [MOC])
+and:   X> SAVE("C:\Users\Tomasz\source\repos\Testing\Testing\example.csv", [ITERACJA], 4, [AKTUALNA])
+
+
+
+
+ 
