@@ -33,3 +33,8 @@ let rec factorial =
     | n when toNearest n >= 1. -> n * factorial(n - 1.)
     | n when toNearest n < 0. -> nan
 
+// smallest part for floating point numbers comparisons, especially equality
+let epsilon = 0.000_001 //Double.Epsilon * 50_000.
+// equality with tolerance
+let (=~) a b = abs(a - b) < epsilon 
+
