@@ -25,3 +25,5 @@ let declare<'a>  =  Unchecked.defaultof<'a>
 
 let rec recursiveFix f x = f (recursiveFix f) x
 
+let toNearest (n:float) = Math.Round n
+
