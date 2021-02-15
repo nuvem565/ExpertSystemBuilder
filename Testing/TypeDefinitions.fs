@@ -172,3 +172,14 @@ type Terminal =
 
 //let unwrapValues (Values x) = x
 
+type BoolExpr = 
+    | LogicalConst of bool
+    | Not of BoolExpr
+    | BoolLeaf of Terminal
+    | QualifierComparison of string * (string list) 
+    | ChoiceComparison of string 
+    | StringComparison of Terminal * Terminal
+    | Logical of string * BoolExpr * BoolExpr
+    | Comparison of string * BoolExpr * BoolExpr
+
+
