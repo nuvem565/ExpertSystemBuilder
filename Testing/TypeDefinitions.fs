@@ -64,3 +64,7 @@ type QualifierBody =
     | FromRule of string 
     | FromProgram of program:string * question:string
 
+type QualifierValue =
+    | Undefined
+    | Possibilities of string list
+
