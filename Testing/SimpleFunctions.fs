@@ -53,3 +53,7 @@ let fuzzyOR (a:float) b =
     else
         (a + b) / (1. - (min (abs a) (abs b)))
 
+let fuzzyAND (a:float) b = a * b
+
+let fuzzyNOT (a:float) = 1. - a
+
