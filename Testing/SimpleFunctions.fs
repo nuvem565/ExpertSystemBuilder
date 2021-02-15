@@ -110,3 +110,64 @@ let defuzzify (qualifier:Qualifier) (inputValues: (string * float)list) =
     sum 0. 0. centersOfSets inputValues
 
 
+let csvToNumber path (row:float) (column:float) (delimiter) =
+    let csvInLines = System.IO.File.ReadAllLines(path)
+    try csvInLines.[(int(row))].Split(delimiter).[(int(column) - 1)]
+    with :? System.IndexOutOfRangeException -> "0"
+    |> float
+
+
+let saveToCsv path (row:float) (column:float) (delimiter) (input:float) =
+    let currentCsv = System.IO.File.ReadAllLines(path)
+    let maxColumn = 
+        try Array.max [| for currentRow in currentCsv do yield currentRow.Split(delimiter).Length |]
+        with :? ArgumentException -> int column
+    let newCsv = 
+        if  row > float(currentCsv.GetLength(0) - 1) || column > float(maxColumn) then
+            Array.unfold (fun i ->
+                if i <= (max (int row) (currentCsv.Length - 1)) then 
+                    (
+                        Array.unfold ( fun j -> 
+                            if j <= (max (int column - 1) (maxColumn - 1)) then 
+                                try 
+                                    (currentCsv.[i].Split(delimiter).[j] , j+1) |> Some
+                                with
+                                    :? System.IndexOutOfRangeException -> ("0", j+1) |> Some
+                            else None
+                        ) 0
+                    , 
+                    (i+1)
+                    ) |> Some
+                else None
+                ) 1
+            (* NOT WORKING BECAUSE OF EXCEPITION HANDLING IN SEQUENCE EXPRESSIONS[|
+                for i = 1 to (max (int row) (currentCsv.Length - 1)) do
+                    yield 
+                        [|  
+                            for j = 0 to (max (int column) maxColumn) do 
+                                try 
+                                    yield currentCsv.[i].Split(delimiter).[j]
+                                with 
+                                    :? System.IndexOutOfRangeException -> yield "0"
+                        |] 
+            |]*)
+        else 
+            [| 
+                for currentRow in currentCsv.[1..(currentCsv.Length - 1)] do 
+                    yield [| for cell in currentRow.Split(delimiter) do yield cell |] 
+            |]
+
+    (newCsv.[int(row - 1.)].[int(column - 1.)] <- input.ToString())
+    let delimiterString = String.Concat delimiter
+    let csvString =
+        let firstRow = 
+            try currentCsv.[0]
+            with :? System.IndexOutOfRangeException -> 
+                String.Join("",[| for i = 0 to newCsv.[0].Length do yield (sprintf "Col-%i" i) |])
+        [| 
+            yield firstRow
+            for newRow in newCsv do 
+                yield ( String.Join(delimiterString, newRow ))
+        |]    
+    System.IO.File.WriteAllLines(path,csvString) 
+
