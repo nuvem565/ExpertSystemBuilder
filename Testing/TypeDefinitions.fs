@@ -158,3 +158,17 @@ type Expr =
     | Prefix of string * Expr //-10, -[ZMIENNA]
     | ReadFromCSV of Expr * Expr * Expr // string - ścieżka do pliku tabeli, Expr - numer wiersza, numer kolumny
 
+type Terminal =
+    | Question of string // Część body Qualifiera (zazwyczaj z : lub ?)
+    | Value of string
+    //| Value of string // Część do przypisania lub porównania, konkretna wartość wyliczenia w {}
+    //| Values of (string option * string) // na potrzeby wielokrotnego warunku z and: ... OR ...
+    | Expression of Expr // wyrażenie obliczane na potrzeby porównania logicznego
+    | StringConst of string // literał w postaci ciągu znaków, jako część porównania logicznego
+    | StringVar of string // zmienna w postaci ciągu znaków, jako część porównania logicznego
+    | QualifierName of string // name of qualifier from qualifier resize array record
+    | NumericVar of string // for function as SAVE() purposes
+    | ChoiceVar of string // for function as SAVE() purposes
+
+//let unwrapValues (Values x) = x
+
