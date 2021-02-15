@@ -59,3 +59,8 @@ CHOICES:
 
 VARIABLES:
 
+[MOC]  Moc napędu chłodzenia/grzania 
+Type = N
+Upper = 800
+Lower = -800
+
