@@ -83,3 +83,7 @@ Initialize = 1500
 [e] Uchyb regulacji 
 Type = N 
 
+[KP] Wzmocnienie regulacji
+Type = N
+Initialize = 2
+
