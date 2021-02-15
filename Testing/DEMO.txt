@@ -87,3 +87,9 @@ Type = N
 Type = N
 Initialize = 2
 
+/* Parametry obiektu
+
+[T1] Parametr obiektu T1
+Type = N
+Initialize = 945
+
