@@ -68,3 +68,36 @@ type QualifierValue =
     | Undefined
     | Possibilities of string list
 
+type Qualifier = 
+    { 
+        Number: int32
+        Question: QualifierBody //body
+        mutable Value: QualifierValue
+        Enumerations: (string * (((float * float) list) option)) list
+        Name: string option
+        Fuzzify: string option // variable to fuzzify
+        Defuzzify: string option // variable to set by defuzzification
+    }
+    member __.unwrapQuestion = 
+        match __.Question with
+        | FromRule r -> r
+        | FromProgram(question = q) -> q
+    member __.unwrapProgram =
+        match __.Question with
+        | FromProgram(program = p) -> p
+        | _ -> failwith "Expected command of running program (in order to set qualifier)"
+    member __.unwrapEnums = fst(List.unzip __.Enumerations)
+    member __.printfEnums = 
+        for i = 1 to __.Enumerations.Length do
+            printf "\t%i) %s\r\n" i (__.unwrapEnums.Item (i - 1))
+    member __.sprintfEnums =
+        let sb = new StringBuilder()
+        sb.Append("\r\n") |> ignore
+        for i = 1 to __.Enumerations.Length do
+            sb.AppendFormat ("\t{0}) {1}\r\n", i, __.unwrapEnums.Item(i-1)) |> ignore
+        sb.ToString()
+    member __.unwrapName = 
+        match __.Name with
+        | Some name -> name
+        | None -> failwith "Expected qualifier name (which is unnecessary), that should be used as variable so inside square brackets. For example:  SAVE(...,...,...,[QUALIFIER1])"
+
