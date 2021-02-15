@@ -146,3 +146,15 @@ THEN:
        Wyjście regulatora {DUŻO} - confidence = 0.6 {UMIARKOWANIE} - confidence = -0.1 {MAŁO} - confidence = -0.3
 
 
+/* Obliczenie odpowiedzi skokowej
+
+IF:
+       TRUE
+
+THEN:
+       X> DEFUZZIFY
+and:   [AKTUALNA] IS GIVEN THE VALUE [K]*( 1 - [T1]/([T1] - [T2])*exp(-([ITERACJA])/[T1]) + [T2]/([T1]-[T2])*exp(-([ITERACJA])/[T2]) ) * [MOC] /*READ("C:\Users\Tomasz\source\repos\Testing\Testing\example.csv", ([ITERACJA]), 3)
+
+
+
+
