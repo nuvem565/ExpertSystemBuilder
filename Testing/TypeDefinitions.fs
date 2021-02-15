@@ -18,3 +18,8 @@ type ProbabilityMode =
     | Custom
     | Fuzzy
 
+type Derivation =
+    | AllRulesUsed
+    | ChosenByUser
+    | NonRedundant
+    //| FirstRuleOnly
