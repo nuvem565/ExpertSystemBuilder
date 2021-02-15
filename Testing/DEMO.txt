@@ -78,3 +78,8 @@ Initialize = 0
 Type = N
 Initialize = 1500
 
+/* Parametry regulatora
+
+[e] Uchyb regulacji 
+Type = N 
+
