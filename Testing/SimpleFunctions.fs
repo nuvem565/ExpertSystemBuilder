@@ -19,3 +19,7 @@ let noneIfEmpty = function
     | [] -> None
     | vl -> Some vl
 
+// Interpreter
+// ugly solution to lack of declaration - making evaluation function  
+let declare<'a>  =  Unchecked.defaultof<'a>
+
