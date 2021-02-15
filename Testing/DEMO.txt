@@ -158,3 +158,18 @@ and:   [AKTUALNA] IS GIVEN THE VALUE [K]*( 1 - [T1]/([T1] - [T2])*exp(-([ITERACJ
 
 
 
+/* RULE NUMBER: 5
+RULE: 5
+
+IF:
+       TRUE
+
+THEN: 
+       X> SAVE("C:\Users\Tomasz\source\repos\Testing\Testing\example.csv", [ITERACJA], 1, [ITERACJA])
+and:   X> SAVE("C:\Users\Tomasz\source\repos\Testing\Testing\example.csv", [ITERACJA], 2, [e])
+and:   X> SAVE("C:\Users\Tomasz\source\repos\Testing\Testing\example.csv", [ITERACJA], 3, [MOC])
+and:   X> SAVE("C:\Users\Tomasz\source\repos\Testing\Testing\example.csv", [ITERACJA], 4, [AKTUALNA])
+/*and:   X> CLEAR(Q [UCHYB_REGULACJI])
+
+
+ 
