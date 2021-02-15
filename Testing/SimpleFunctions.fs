@@ -12,3 +12,6 @@ let trd a b c = c
 let X = fst
 let Y = snd
 
+// curried version of str.Trim()
+let trim (str:string) = str.Trim()
+
