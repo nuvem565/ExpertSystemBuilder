@@ -23,3 +23,5 @@ let noneIfEmpty = function
 // ugly solution to lack of declaration - making evaluation function  
 let declare<'a>  =  Unchecked.defaultof<'a>
 
+let rec recursiveFix f x = f (recursiveFix f) x
+
