@@ -60,3 +60,7 @@ type BasicInfo =
     }
 
 
+type QualifierBody = 
+    | FromRule of string 
+    | FromProgram of program:string * question:string
+
