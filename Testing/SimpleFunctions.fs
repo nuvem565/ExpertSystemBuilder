@@ -45,3 +45,11 @@ let containsAnyOf options vl = // TRUE if "options" contains any of "vl"
 let sortOutPoints (points: (float * float) list) = 
     List.sortBy (fun point -> fst point) points 
 
+let fuzzyOR (a:float) b = 
+    if (a > 0. || a =~ 0.) && (b > 0. || b =~ 0.) then 
+        a + b - a * b
+    elif (a < 0. && b < 0.) then 
+        - ( (-a) + (-b) - (-a)*(-b) )
+    else
+        (a + b) / (1. - (min (abs a) (abs b)))
+
