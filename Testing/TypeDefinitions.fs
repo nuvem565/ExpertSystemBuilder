@@ -183,3 +183,9 @@ type BoolExpr =
     | Comparison of string * BoolExpr * BoolExpr
 
 
+type RuleValue = 
+    | True of float
+    | False
+    | Unverified
+
+
