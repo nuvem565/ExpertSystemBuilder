@@ -101,3 +101,5 @@ type Qualifier =
         | Some name -> name
         | None -> failwith "Expected qualifier name (which is unnecessary), that should be used as variable so inside square brackets. For example:  SAVE(...,...,...,[QUALIFIER1])"
 
+type Qualifiers = Qualifiers of ResizeArray<Qualifier>
+
