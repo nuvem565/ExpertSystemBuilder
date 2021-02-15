@@ -42,3 +42,6 @@ let (=~) a b = abs(a - b) < epsilon
 let containsAnyOf options vl = // TRUE if "options" contains any of "vl" 
     List.exists (fun v -> List.contains v options) vl
 
+let sortOutPoints (points: (float * float) list) = 
+    List.sortBy (fun point -> fst point) points 
+
