@@ -8,3 +8,13 @@ type Source =
     | SetByExternalProgram
     | SetByDatabaseQuery
 
+type ProbabilityMode =
+    | YesNo
+    | ZeroTen
+    | HundredAverage
+    | HundredIndependent
+    | HundredDependent
+    | IncrDecr
+    | Custom
+    | Fuzzy
+
