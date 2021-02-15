@@ -38,3 +38,7 @@ let epsilon = 0.000_001 //Double.Epsilon * 50_000.
 // equality with tolerance
 let (=~) a b = abs(a - b) < epsilon 
 
+// important for qualifier comparisons
+let containsAnyOf options vl = // TRUE if "options" contains any of "vl" 
+    List.exists (fun v -> List.contains v options) vl
+
