@@ -77,3 +77,36 @@ let fuzzifyVar (fs: (string * (((float * float) list) option)) list) (x: float) 
             | valName, _ -> yield (valName, 0.0) 
     ]
 
+let defuzzify (qualifier:Qualifier) (inputValues: (string * float)list) =
+    // if defuzzification has to be height method
+    let rec findCentersOfSets (acc: (string * float) list) (enums: (string * (((float * float) list) option))list) =
+        match enums with
+        | ( valueName, Some(points) ) :: restEnums ->
+            let centralX = 
+                [ for point in points do // find supremum points
+                    if points <> [] && Y(point) = Y(List.maxBy Y points)
+                    then yield point ]
+                |> function
+                | [] -> failwith (sprintf "No max y value in %A?" qualifier.unwrapQuestion)
+                | max :: [] -> X(max) // one maximum point
+                | maxPoints -> // take average (center) of xMax1 and xMax2
+                    [ List.minBy X maxPoints; List.maxBy X maxPoints ]
+                    |> List.averageBy X
+            findCentersOfSets ((valueName, centralX) :: acc) restEnums    
+        | [] -> acc
+  
+    let centersOfSets = findCentersOfSets [] qualifier.Enumerations
+
+    let rec sum numerator denominator (centersX: (string * float) list) (valuesY: (string * float) list) =
+        match valuesY with
+        | (name, valueY) :: restY -> 
+            let congruentX = snd(List.find (function centerX -> fst(centerX) = name) centersX)
+            if valueY >= 0. then sum (congruentX * valueY + numerator) (valueY + denominator) centersX restY
+            else  sum (numerator) (denominator) centersX restY
+        | [] -> 
+            if denominator = 0. then 0.
+            else numerator/denominator
+
+    sum 0. 0. centersOfSets inputValues
+
+
