@@ -97,3 +97,9 @@ Initialize = 945
 Type = N
 Initialize = 450
 
+[K] Wzmocnienie obiektu regulacji
+Type = N
+Initialize = 15
+
+
+
