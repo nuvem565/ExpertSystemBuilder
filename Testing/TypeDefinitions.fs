@@ -149,3 +149,12 @@ type Variable =
 
 type Variables = Variables of ResizeArray<Variable>
 
+type Expr =
+    | Variable of string // Odwołanie do zmiennej o nazwie w [] 
+    | PathForFrame of string
+    | ChoiceMembership of string
+    | Const of float // Stała liczbowa, np. 0, 4, 50.2, itd.
+    | Expr of string * Expr * Expr
+    | Prefix of string * Expr //-10, -[ZMIENNA]
+    | ReadFromCSV of Expr * Expr * Expr // string - ścieżka do pliku tabeli, Expr - numer wiersza, numer kolumny
+
