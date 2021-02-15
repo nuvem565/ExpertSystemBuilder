@@ -103,3 +103,12 @@ type Qualifier =
 
 type Qualifiers = Qualifiers of ResizeArray<Qualifier>
 
+type Choice = 
+    {
+        Number: int32
+        Name: string
+        State: float option 
+    }
+
+type Choices = Choices of ResizeArray<Choice>
+
