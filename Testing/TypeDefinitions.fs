@@ -112,3 +112,40 @@ type Choice =
 
 type Choices = Choices of ResizeArray<Choice>
 
+type VarAttribute = 
+    | Name of string
+    | Description of string
+    | StringVariable of string option
+    | NumericVariable of float option
+    | Upper of float option
+    | Lower of float option
+    | Undefined
+
+
+type Variable = 
+    {
+        Name: VarAttribute
+        Description: VarAttribute
+        mutable Value: VarAttribute
+        UpperLimit: VarAttribute
+        LowerLimit: VarAttribute
+    }
+    member __.unwrapName =
+        match __.Name with
+        | Name n -> n
+        | _ -> failwith (sprintf "Unexpected case for name of variable: %A" __)
+    member __.unwrapString = 
+        match __.Value with
+        | StringVariable s -> s
+        | error -> failwith (sprintf "Incorrect demand. Value isn't a string: %A" error)
+    member __.getRange = 
+        let (Lower l) = __.LowerLimit
+        let (Upper u) = __.UpperLimit
+        (if l.IsNone then System.Double.MinValue else l.Value), (if u.IsNone then System.Double.MaxValue else u.Value)
+    member __.unwrapDescription = 
+        match __.Description with
+        | Description d -> d
+        | _ -> "<improper description>"
+
+type Variables = Variables of ResizeArray<Variable>
+
